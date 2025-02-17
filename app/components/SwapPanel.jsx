@@ -11,7 +11,7 @@ import eth from "../../public/ethereum-eth-logo.svg";
 function SwapPanel() {
   // Define token objects (adjust logo paths as needed)
   const tokens = [
-    { name: "XENOX", logo: "/logos/xenox.png" },
+    { name: "XENOX", logo: sol },
     { name: "SOL", logo: sol },
     { name: "BTC", logo: btc },
     { name: "ETH", logo: eth },
