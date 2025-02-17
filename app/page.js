@@ -2,7 +2,6 @@
 // Because we'll have some stateful logic (e.g. in SwapPanel).
 
 import React from "react";
-import Hero from "./components/Hero";
 import Header from "./components/Header";
 import SwapPanel from "./components/SwapPanel";
 import Footer from "./components/Footer";
@@ -13,19 +12,8 @@ import lines from "../public/lines.png";
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen relative">
-      {/* Hero Section */}
-      <Hero />
-
       {/* Swap Panel */}
       <div className="relative py-24">
-        <Image
-          width={900}
-          height={900}
-          className="opacity-25 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-clip -z-50"
-          src={curve}
-          alt="na design"
-        />
-
         <Image
           width={900}
           height={900}
