@@ -39,7 +39,7 @@ function Header() {
             : "absolute top-8 bg-gray-900"
         }`}
       >
-        <nav className="font-bold flex items-center justify-between text-white p-4">
+        <nav className="font-bold flex items-center justify-between text-white px-4">
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold uppercase">
             Xenox
@@ -165,7 +165,7 @@ function Header() {
                 setMobileMenuOpen(false);
                 handleConnect();
               }}
-              className="flex gap-3 bg-teal-600 hover:bg-teal-400 text-gray-800 font-extrabold py-2 px-4 rounded w-full"
+              className="flex gap-3 bg-red-600 hover:bg-red-500 text-gray-800 font-extrabold py-2 px-4 rounded w-full"
             >
               <Wallet />
               <p>Connect Wallet</p>
