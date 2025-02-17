@@ -1,16 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
-import { Wallet, ArrowUpDown } from "lucide-react";
+import { Wallet, ArrowUpDown, ChevronDown } from "lucide-react";
+
 import Image from "next/image";
+import sol from "../../public/solana-sol-logo.svg";
+import btc from "../../public/bitcoin-btc-logo.svg";
+import eth from "../../public/ethereum-eth-logo.svg";
 
 function SwapPanel() {
   // Define token objects (adjust logo paths as needed)
   const tokens = [
     { name: "XENOX", logo: "/logos/xenox.png" },
-    { name: "SOL", logo: "/logos/sol.png" },
-    { name: "BTC", logo: "/logos/btc.png" },
-    { name: "ETH", logo: "/logos/eth.png" },
+    { name: "SOL", logo: sol },
+    { name: "BTC", logo: btc },
+    { name: "ETH", logo: eth },
   ];
 
   // Initialize state with token objects
@@ -61,18 +65,28 @@ function SwapPanel() {
                       setActiveTokenField("from");
                       setModalOpen(true);
                     }}
-                    className="w-32 px-6 py-3 bg-gray-700 text-white font-bold rounded-3xl focus:outline-none"
+                    className="w-32 px-6 py-3 bg-gray-700 text-white font-bold rounded-3xl focus:outline-none flex items-center justify-center"
                   >
-                    {fromToken.name}
+                    <div className="flex items-center mr-2">
+                      <Image
+                        src={fromToken.logo}
+                        alt={fromToken.name}
+                        width={20} // Adjust width and height as needed
+                        height={20}
+                        className="mr-2"
+                      />
+                      {fromToken.name}
+                    </div>
+                    <ChevronDown size={16} className="text-white" />
                   </button>
                   <div className="w-1/2">
                     <input
                       id="fromAmount"
                       type="number"
-                      placeholder="0.0"
+                      placeholder="0"
                       value={fromAmount}
                       onChange={(e) => setFromAmount(e.target.value)}
-                      className="w-full p-2 rounded bg-gray-600 text-white focus:outline-none"
+                      className="w-full text-3xl text-right p-2 rounded bg-transparent text-white focus:outline-none"
                     />
                   </div>
                 </div>
@@ -102,25 +116,35 @@ function SwapPanel() {
               </div>
               <div className="border border-gray-100  mb-20 py-10 px-10 rounded-3xl">
                 <div className="flex items-center justify-between">
-                  {/* Token button for "from" selection */}
+                  {/* Token button for "to" selection */}
                   <button
                     type="button"
                     onClick={() => {
                       setActiveTokenField("to");
                       setModalOpen(true);
                     }}
-                    className="w-32 px-6 py-3 bg-gray-700 text-white font-bold rounded-3xl focus:outline-none"
+                    className="w-32 px-6 py-3 bg-gray-700 text-white font-bold rounded-3xl focus:outline-none flex items-center justify-center"
                   >
-                    {toToken.name}
+                    <div className="flex items-center mr-2">
+                      <Image
+                        src={toToken.logo}
+                        alt={toToken.name}
+                        width={20} // Adjust width and height as needed
+                        height={20}
+                        className="mr-2"
+                      />
+                      {toToken.name}
+                    </div>
+                    <ChevronDown size={16} className="text-white" />
                   </button>
                   <div className="w-1/2">
                     <input
-                      id="fromAmount"
+                      id="toAmount"
                       type="number"
-                      placeholder="0.0"
-                      value={fromAmount}
-                      onChange={(e) => setFromAmount(e.target.value)}
-                      className="w-full p-2 rounded bg-gray-600 text-white focus:outline-none"
+                      placeholder="0"
+                      value={toAmount}
+                      onChange={(e) => setToAmount(e.target.value)}
+                      className="w-full text-3xl text-right p-2 rounded bg-transparent text-white focus:outline-none"
                     />
                   </div>
                 </div>
@@ -173,11 +197,9 @@ function SwapPanel() {
         </div>
 
         {/* RIGHT: Instruction Card */}
-        <div className="bg-gray-800 rounded-lg p-6 w-full max-w-lg border border-gray-700 mx-auto">
-          <h2 className="text-xl font-bold text-teal-600 mb-4">
-            Swap Instructions
-          </h2>
-          <ol className="list-decimal list-inside text-white">
+        <div className="bg-gray-800 rounded-lg p-6 w-full max-w-lg border border-gray-700 mx-auto ">
+          <h2 className="text-2xl text-teal-600 mb-4">Swap</h2>
+          <ol className="list-decimal list-inside text-white space-y-10">
             <li className="mb-2">
               Select the currency you want to swap from and enter the amount.
             </li>
