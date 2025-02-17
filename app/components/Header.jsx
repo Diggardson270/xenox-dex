@@ -46,51 +46,15 @@ function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <ul className="hidden lg:flex space-x-16">
-            <li>
-              <Link
-                href="/"
-                className={`${
-                  pathname === "/swap-panel"
-                    ? "text-blue-400"
-                    : "hover:text-gray-400"
-                } transition`}
-              >
-                Swap Panel
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/news"
-                className={`${
-                  pathname === "/news" ? "text-blue-400" : "hover:text-gray-400"
-                } transition`}
-              >
-                News
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/about"
-                className={`${
-                  pathname === "/about"
-                    ? "text-blue-400"
-                    : "hover:text-gray-400"
-                } transition`}
-              >
-                About
-              </Link>
-            </li>
-          </ul>
 
           <div className="flex items-center">
             {/* Desktop Connect Button */}
             <button
               onClick={handleConnect}
-              className="hidden lg:flex gap-3 bg-red-800 hover:bg-red-700 text-gray-800 font-extrabold py-2 px-4 rounded"
+              className="hidden lg:flex gap-3 bg-opacity-90 bg-red-500 hover:bg-red-400 text-gray-800 font-extrabold py-2 px-4 rounded"
             >
               <Wallet />
-              <p>Connect Wallet</p>
+              <p>Swap Wallet</p>
             </button>
 
             {/* Mobile Menu Button */}
@@ -125,50 +89,15 @@ function Header() {
         </div>
         <ul className="flex flex-col space-y-10 p-5">
           <li>
-            <Link
-              href="#swap-panel"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`${
-                pathname === "/swap-panel"
-                  ? "text-blue-400"
-                  : "hover:text-gray-400"
-              } transition block`}
-            >
-              Swap Panel
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/news"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`${
-                pathname === "/news" ? "text-blue-400" : "hover:text-gray-400"
-              } transition block`}
-            >
-              News
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/about"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`${
-                pathname === "/about" ? "text-blue-400" : "hover:text-gray-400"
-              } transition block`}
-            >
-              About
-            </Link>
-          </li>
-          <li>
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
                 handleConnect();
               }}
-              className="flex gap-3 bg-red-600 hover:bg-red-500 text-gray-800 font-extrabold py-2 px-4 rounded w-full"
+              className="flex gap-3 bg-red-500 hover:bg-red-400 text-gray-800 font-extrabold py-2 px-4 rounded w-full"
             >
               <Wallet />
-              <p>Connect Wallet</p>
+              <p>Swap Wallet</p>
             </button>
           </li>
         </ul>

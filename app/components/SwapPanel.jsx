@@ -35,10 +35,10 @@ function SwapPanel() {
   };
 
   return (
-    <div className="container mx-auto mt-24 px-4">
+    <div className="container mx-auto mt-24 px-14">
       <div className="flex flex-col lg:flex-row gap-6">
         {/* LEFT: Swap Panel */}
-        <div className="bg-gray-800 rounded-lg p-6 w-full max-w-lg border border-gray-700 mx-auto relative">
+        <div className="bg-gray-800 rounded-lg p-6 lg:w-1/2 max-w-2xl border border-gray-700 mx-auto relative">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -46,8 +46,8 @@ function SwapPanel() {
             }}
           >
             {/* From Section */}
-            <div className="mb-10 ">
-              <div className="font-semibold mb-4 text-red-700">
+            <div className="mt-5">
+              <div className="font-semibold mb-2 text-red-700">
                 <div className="flex text-sm items-center justify-between">
                   <p>From</p>
                   <p>
@@ -104,7 +104,8 @@ function SwapPanel() {
               </div>
             </div>
 
-            <div className="mt-10 ">
+            {/* to section */}
+            <div className="mt-2 ">
               <div className="font-semibold mb-4 text-red-700">
                 <div className="flex text-sm items-center justify-between">
                   <p>To</p>
@@ -197,7 +198,7 @@ function SwapPanel() {
         </div>
 
         {/* RIGHT: Instruction Card */}
-        <div className="bg-gray-800 rounded-lg p-6 w-full max-w-lg border border-gray-700 mx-auto ">
+        <div className="bg-gray-800 rounded-lg p-6 lg:w-1/2 max-w-2xl border border-gray-700 mx-auto ">
           <h2 className="text-2xl text-teal-600 mb-4">Swap</h2>
           <ol className="list-decimal list-inside text-white space-y-10">
             <li className="mb-2">
