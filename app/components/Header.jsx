@@ -33,7 +33,7 @@ function Header() {
     <>
       {/* Header Container */}
       <header
-        className={`transition-all duration-300 px-4 md:px-8 py-4 rounded-xl w-[90%] max-w-7xl mx-auto z-50 left-1/2 transform -translate-x-1/2 ${
+        className={`transition-all duration-300 md:px-8 py-4 rounded-xl w-[90%] max-w-7xl mx-auto z-50 left-1/2 transform -translate-x-1/2 ${
           isFixed
             ? "fixed top-0 bg-gray-900 shadow-lg"
             : "absolute top-8 bg-gray-900"

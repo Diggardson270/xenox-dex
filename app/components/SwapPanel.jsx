@@ -35,7 +35,7 @@ function SwapPanel() {
   };
 
   return (
-    <div className="container px-5 mx-auto mt-24 lg:px-14">
+    <div className="container px-2 mx-auto mt-24 lg:px-14">
       <div className="flex flex-col md:flex-col lg:flex-row gap-6">
         {/* LEFT: Swap Panel */}
         <div className="bg-gray-900 rounded-lg p-6 lg:w-1/2 max-w-xl mx-auto relative">
@@ -56,7 +56,7 @@ function SwapPanel() {
                   </p>
                 </div>
               </div>
-              <div className="border-gray-800 border-[1px] mb-10 py-8 px-5 rounded-3xl">
+              <div className="border-gray-800 border-[1px] mb-10 py-8 px-2 lg:px-5 rounded-3xl">
                 <div className="flex items-center justify-between">
                   {/* Token button for "from" selection */}
                   <button
@@ -65,7 +65,7 @@ function SwapPanel() {
                       setActiveTokenField("from");
                       setModalOpen(true);
                     }}
-                    className="text-xs w-32 px-3 py-3 bg-gray-800 text-white font-bold rounded-3xl focus:outline-none flex items-center justify-center"
+                    className="text-xs w-32 px-3 py-3 bg-gray-800 text-white font-bold rounded-lg focus:outline-none flex items-center justify-center"
                   >
                     <div className="flex items-center mr-2">
                       <Image
@@ -128,7 +128,7 @@ function SwapPanel() {
                       setActiveTokenField("to");
                       setModalOpen(true);
                     }}
-                    className="text-xs w-32 px-3 py-3 bg-gray-800 text-white font-bold rounded-3xl focus:outline-none flex items-center justify-center"
+                    className="text-xs w-32 px-3 py-3 bg-gray-800 text-white font-bold rounded-lg focus:outline-none flex items-center justify-center"
                   >
                     <div className="flex items-center mr-2">
                       <Image
