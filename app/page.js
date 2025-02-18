@@ -11,7 +11,7 @@ import lines from "../public/lines.png";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen relative">
+    <div className="flex flex-col min-h-screen relative top-12">
       {/* Swap Panel */}
       <div className="relative py-24">
         <Image

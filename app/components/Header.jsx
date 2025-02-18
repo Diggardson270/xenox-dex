@@ -3,7 +3,14 @@
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Wallet, Menu, X } from "lucide-react";
+import { Wallet, ChartCandlestick, CandlestickChart } from "lucide-react";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  variable: "--font-poppins",
+});
 
 function Header() {
   const pathname = usePathname();
@@ -41,7 +48,10 @@ function Header() {
       >
         <nav className="font-bold flex items-center justify-between text-white px-2">
           {/* Logo */}
-          <Link href="/" className="text-2xl font-bold uppercase">
+          <Link
+            href="/"
+            className={`${poppins.variable} font-extralight text-4xl uppercase`}
+          >
             <span className="text-4xl text-red-700">X</span>enox
           </Link>
 
@@ -51,9 +61,9 @@ function Header() {
             {/* Desktop Connect Button */}
             <button
               onClick={handleConnect}
-              className="flex text-sm justify-between items-center gap-1  text-gray-200 font-bold py-2 px-4 rounded"
+              className="flex text-base justify-between items-center gap-1  text-gray-200 font-bold py-2 px-4 rounded"
             >
-              <Wallet size={12} className="text-yellow-500" />
+              <CandlestickChart size={14} className="text-red-500" />
               <p>Swap Wallet</p>
             </button>
 

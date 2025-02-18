@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Wallet, ArrowUpDown, ChevronDown } from "lucide-react";
+import { Wallet, ArrowUpDown, ArrowDownUp, ChevronDown } from "lucide-react";
 
 import Image from "next/image";
 import sol from "../../public/solana-sol-logo.svg";
@@ -17,11 +17,21 @@ function SwapPanel() {
     { name: "ETH", logo: eth },
   ];
 
+  const instructions = [
+    "Select the currency you want to swap from and enter the amount.",
+    "Select the currency you want to swap to.",
+    "Click the swap arrow icon to execute the swap.",
+    "Review the transaction details and confirm.",
+  ];
+
   // Initialize state with token objects
   const [fromToken, setFromToken] = useState(tokens[0]);
   const [toToken, setToToken] = useState(tokens[1]);
   const [fromAmount, setFromAmount] = useState("");
   const [toAmount, setToAmount] = useState("");
+
+  // State to manage the toggle between icons
+  const [isSwapped, setIsSwapped] = useState(false);
 
   // Modal state and which token field is active ('from' or 'to')
   const [modalOpen, setModalOpen] = useState(false);
@@ -32,13 +42,15 @@ function SwapPanel() {
     alert(
       `Swapping ${fromAmount} ${fromToken.name} to ${toAmount} ${toToken.name}`
     );
+
+    setIsSwapped((prev) => !prev);
   };
 
   return (
-    <div className="container px-4 mx-auto mt-24 lg:px-14">
+    <div className="w-[90%] lg:w-2/3  px-4 mx-auto mt-24 lg:px-14">
       <div className="flex flex-col md:flex-col lg:flex-row gap-6">
         {/* LEFT: Swap Panel */}
-        <div className="bg-gray-900 rounded-3xl px-4 py-10 lg:px-6 lg:w-full mx-auto relative">
+        <div className="bg-gray-900 rounded-3xl px-4 py-10 lg:px-6 lg:w-3/4 mx-auto">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -56,60 +68,69 @@ function SwapPanel() {
                   </p>
                 </div>
               </div>
-              <div className="border-gray-800 border-[1px] mb-10 py-8 px-5 rounded-3xl">
+              <div className="border-gray-800 border-[1px] py-2 px-3 rounded-lg mb-12">
                 <div className="flex items-center justify-between">
-                  {/* Token button for "from" selection */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setActiveTokenField("from");
-                      setModalOpen(true);
-                    }}
-                    className="text-xs w-32 lg:w-44 px-3 py-3 lg:py-7 bg-gray-800 text-white font-bold rounded-lg focus:outline-none flex items-center justify-center"
-                  >
-                    <div className="flex items-center mr-2">
-                      <Image
-                        src={fromToken.logo}
-                        alt={fromToken.name}
-                        width={15} // Adjust width and height as needed
-                        height={15}
-                        className="mr-2"
-                      />
-                      {fromToken.name}
-                    </div>
-                    <ChevronDown size={16} className="text-white" />
-                  </button>
+                  <div>
+                    {/* Token button for "to" selection */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTokenField("from");
+                        setModalOpen(true);
+                      }}
+                      className="text-xs lg:text-sm w-40 px-3 py-7 bg-gray-800 bg-opacity-45 text-white font-bold rounded-lg focus:outline-none flex items-center justify-center"
+                    >
+                      <div className="flex items-center mr-2">
+                        <Image
+                          src={fromToken.logo}
+                          alt={fromToken.name}
+                          width={15} // Adjust width and height as needed
+                          height={15}
+                          className="mr-2"
+                        />
+                        {fromToken.name}
+                      </div>
+                      <ChevronDown size={16} className="text-white" />
+                    </button>
+                  </div>
                   <div className="w-1/2">
                     <input
-                      id="fromAmount"
+                      id="toAmount"
                       type="number"
                       placeholder="0"
                       value={fromAmount}
                       onChange={(e) => setFromAmount(e.target.value)}
                       className="w-full text-3xl text-right p-2 rounded bg-transparent text-white focus:outline-none"
                     />
+                    <div className="flex flex-col items-end pr-6">
+                      <p className="text-slate-500 font-bold">~$0</p>
+                    </div>
                   </div>
                 </div>
-                <p className="float-end text-slate-500 font-bold">~$0</p>
               </div>
             </div>
 
             {/* Center Arrow Icon for Swap (clickable) */}
             <div className="relative flex justify-center my-6">
               {/* Horizontal Line */}
-              <hr className="opacity-45 absolute top-1/2 left-0 w-full border-t-[px] border-slate-800" />
+              <hr className="opacity-45 absolute top-1/2 left-0 w-full border-t border-slate-800" />
 
               {/* Swap Icon */}
               <div
                 onClick={handleSwap}
-                className="cursor-pointer bg-black rounded-lg py-2 px-3 absolute top-1/2 transform -translate-y-1/2 z-10"
+                className="cursor-pointer bg-black rounded-lg py-2 px-3 absolute top-1/2 transform -translate-y-1/2 z-10 transition-opacity duration-500"
               >
-                <ArrowUpDown size={14} className="text-white" />
+                {/* Conditionally render the icon based on isSwapped state */}
+                {isSwapped ? (
+                  <ArrowDownUp size={14} className="text-white" />
+                ) : (
+                  <ArrowUpDown size={14} className="text-white" />
+                )}
               </div>
             </div>
 
             {/* to section */}
-            <div className="mt-2 ">
+            <div className="mt-4 ">
               <div className="font-semibold mb-2 text-gray-300">
                 <div className="flex text-sm items-center justify-between">
                   <p>To</p>
@@ -119,29 +140,31 @@ function SwapPanel() {
                   </p>
                 </div>
               </div>
-              <div className="border-gray-800 border-[1px] py-8 px-5 rounded-3xl">
+              <div className="border-gray-800 border-[1px] py-2 px-3 rounded-lg">
                 <div className="flex items-center justify-between">
-                  {/* Token button for "to" selection */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setActiveTokenField("to");
-                      setModalOpen(true);
-                    }}
-                    className="text-xs w-32 lg:w-44 px-3 py-3 lg:py-7 bg-gray-800 text-white font-bold rounded-lg focus:outline-none flex items-center justify-center"
-                  >
-                    <div className="flex items-center mr-2">
-                      <Image
-                        src={toToken.logo}
-                        alt={toToken.name}
-                        width={15} // Adjust width and height as needed
-                        height={15}
-                        className="mr-2"
-                      />
-                      {toToken.name}
-                    </div>
-                    <ChevronDown size={16} className="text-white" />
-                  </button>
+                  <div>
+                    {/* Token button for "to" selection */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTokenField("to");
+                        setModalOpen(true);
+                      }}
+                      className="text-xs lg:text-sm w-40 px-3 py-7 bg-gray-800 bg-opacity-45 text-white font-bold rounded-lg focus:outline-none flex items-center justify-center"
+                    >
+                      <div className="flex items-center mr-2">
+                        <Image
+                          src={toToken.logo}
+                          alt={toToken.name}
+                          width={15} // Adjust width and height as needed
+                          height={15}
+                          className="mr-2"
+                        />
+                        {toToken.name}
+                      </div>
+                      <ChevronDown size={16} className="text-white" />
+                    </button>
+                  </div>
                   <div className="w-1/2">
                     <input
                       id="toAmount"
@@ -151,9 +174,11 @@ function SwapPanel() {
                       onChange={(e) => setToAmount(e.target.value)}
                       className="w-full text-3xl text-right p-2 rounded bg-transparent text-white focus:outline-none"
                     />
+                    <div className="flex flex-col items-end pr-6">
+                      <p className="text-slate-500 font-bold">~$0</p>
+                    </div>
                   </div>
                 </div>
-                <p className="float-end text-slate-500 font-bold">~$0</p>
               </div>
             </div>
           </form>
@@ -202,21 +227,26 @@ function SwapPanel() {
         </div>
 
         {/* RIGHT: Instruction Card */}
-        <div className="bg-gray-900 rounded-3xl p-6 lg:w-full mx-auto">
+        <div className="bg-gray-900 rounded-3xl p-6 lg:w-2/4 mx-auto">
           <h2 className="text-2xl text-gray-200 mb-6 text-left">Swap</h2>
-
-          <ol className="list-decimal list-inside text-white space-y-10">
-            <li className="mb-2">
-              Select the currency you want to swap from and enter the amount.
-            </li>
-            <li className="mb-2">Select the currency you want to swap to.</li>
-            <li className="mb-2">
-              Click the swap arrow icon to execute the swap.
-            </li>
-            <li className="mb-2">
-              Review the transaction details and confirm.
-            </li>
-          </ol>
+          <div className="relative">
+            {/* Vertical line behind the numbered circles */}
+            <div className="absolute left-4 top-8 bottom-0 w-px bg-gray-950"></div>
+            <ol className="space-y-8">
+              {instructions.map((text, index) => (
+                <li key={index} className="flex items-start">
+                  <div className="relative flex-shrink-0">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-full text-sm text-gray-200 font-bold bg-gray-950">
+                      {index + 1}
+                    </span>
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-white">{text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
       </div>
     </div>
