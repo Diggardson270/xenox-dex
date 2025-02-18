@@ -4,6 +4,7 @@ import Image from "next/image";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { TokenProvider } from "./context/TokenContext";
 
 // Load fonts
 const geistSans = Geist({
@@ -39,9 +40,11 @@ export default function RootLayout({ children }) {
 
           {/* Content Layer */}
           <div className="relative z-20">
-            <Header />
-            {children}
-            <Footer />
+            <TokenProvider>
+              <Header />
+              {children}
+              <Footer />
+            </TokenProvider>
           </div>
         </div>
       </body>
