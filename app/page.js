@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import Image from "next/image";
 import curve from "../public/arrowcurves.png";
 import lines from "../public/lines.png";
+import CryptoReading from "./components/CryptoReading";
 
 export default function Home() {
   return (

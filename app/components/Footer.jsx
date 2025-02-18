@@ -7,7 +7,7 @@ function Footer() {
   return (
     <footer className="bg-gray-900 border border-gray-700 rounded-3xl w-[90%] z-50 max-w-7xl mx-auto px-6 md:px-8 py-6 text-center text-gray-300 relative bottom-6 shadow-lg">
       <div className="container mx-auto flex flex-col items-center space-y-6">
-        <p className="max-w-2xl text-lg font-medium leading-relaxed">
+        <p className="max-w-2xl text-xs lg:text-lg font-medium leading-relaxed">
           XENOX DEX is the fastest DEX on SOL with built-in sniper protection.
           Experience super-fast token swaps and secure transactions. To
           celebrate our launch, the first 50 users to connect will receive 9000
