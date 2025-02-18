@@ -38,7 +38,7 @@ function SwapPanel() {
     <div className="container px-4 mx-auto mt-24 lg:px-14">
       <div className="flex flex-col md:flex-col lg:flex-row gap-6">
         {/* LEFT: Swap Panel */}
-        <div className="bg-gray-900 rounded-3xl px-2 py-10 lg:px-6 lg:w-1/2 max-w-xl mx-auto relative">
+        <div className="bg-gray-900 rounded-3xl px-4 py-10 lg:px-6 lg:w-full mx-auto relative">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -97,7 +97,7 @@ function SwapPanel() {
             {/* Center Arrow Icon for Swap (clickable) */}
             <div className="relative flex justify-center my-6">
               {/* Horizontal Line */}
-              <hr className="absolute top-1/2 left-0 w-full border-t-[px] border-slate-900" />
+              <hr className="opacity-45 absolute top-1/2 left-0 w-full border-t-[px] border-slate-800" />
 
               {/* Swap Icon */}
               <div
@@ -202,8 +202,9 @@ function SwapPanel() {
         </div>
 
         {/* RIGHT: Instruction Card */}
-        <div className="bg-gray-900 rounded-lg p-6 lg:w-1/2 max-w-xl mx-auto ">
-          <h2 className="text-2xl text-red-600 mb-4">Swap</h2>
+        <div className="bg-gray-900 rounded-3xl p-6 lg:w-full mx-auto">
+          <h2 className="text-2xl text-gray-200 mb-6 text-left">Swap</h2>
+
           <ol className="list-decimal list-inside text-white space-y-10">
             <li className="mb-2">
               Select the currency you want to swap from and enter the amount.
