@@ -56,7 +56,7 @@ function SwapPanel() {
                   </p>
                 </div>
               </div>
-              <div className="border-gray-800 border-[1px] mb-10 py-8 px-2 lg:px-5 rounded-3xl">
+              <div className="border-gray-800 border-[1px] mb-10 py-8 px-5 rounded-3xl">
                 <div className="flex items-center justify-between">
                   {/* Token button for "from" selection */}
                   <button
@@ -65,7 +65,7 @@ function SwapPanel() {
                       setActiveTokenField("from");
                       setModalOpen(true);
                     }}
-                    className="text-xs w-32 px-3 py-3 bg-gray-800 text-white font-bold rounded-lg focus:outline-none flex items-center justify-center"
+                    className="text-xs w-32 lg:w-44 px-3 py-3 lg:py-7 bg-gray-800 text-white font-bold rounded-lg focus:outline-none flex items-center justify-center"
                   >
                     <div className="flex items-center mr-2">
                       <Image
@@ -86,7 +86,7 @@ function SwapPanel() {
                       placeholder="0"
                       value={fromAmount}
                       onChange={(e) => setFromAmount(e.target.value)}
-                      className="w-full text-3xl text-right p-2 rounded bg-gray-800 text-white focus:outline-none"
+                      className="w-full text-3xl text-right p-2 rounded bg-transparent text-white focus:outline-none"
                     />
                   </div>
                 </div>
@@ -128,7 +128,7 @@ function SwapPanel() {
                       setActiveTokenField("to");
                       setModalOpen(true);
                     }}
-                    className="text-xs w-32 px-3 py-3 bg-gray-800 text-white font-bold rounded-lg focus:outline-none flex items-center justify-center"
+                    className="text-xs w-32 lg:w-44 px-3 py-3 lg:py-7 bg-gray-800 text-white font-bold rounded-lg focus:outline-none flex items-center justify-center"
                   >
                     <div className="flex items-center mr-2">
                       <Image
