@@ -1,9 +1,11 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Poppins } from "next/font/google";
+import Image from "next/image";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
+// Load fonts
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -23,16 +25,24 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`scroll-smooth ${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-r from-blue-900 via-purple-950 to-gray-950 bg-clip-border bg-opacity-80`}
+        className={`scroll-smooth ${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-r from-blue-700 via-purple-600 to-gray-800 bg-clip-border bg-opacity-100`}
       >
         <div className="relative overflow-hidden min-h-screen">
-          {/* Blob Glassmorphism Background */}
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-blue-900 via-gray-900 to-purple-950 opacity-70 z-0"></div>
-          <div className="absolute top-0 left-0 w-full h-full backdrop-blur-3xl bg-black/80 z-10"></div>
+          {/* Background Container */}
+          <div className="absolute inset-0 z-0">
+            {/* Gradient Background */}
+            <div className="w-full h-full bg-gradient-to-r from-blue-900 via-gray-900 to-purple-950 opacity-70" />
 
-          <Header />
-          <div className="relative z-20">{children}</div>
-          <Footer />
+            {/* Glassmorphism Overlay */}
+            <div className="absolute inset-0 backdrop-blur-3xl bg-black/80" />
+          </div>
+
+          {/* Content Layer */}
+          <div className="relative z-20">
+            <Header />
+            {children}
+            <Footer />
+          </div>
         </div>
       </body>
     </html>

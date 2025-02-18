@@ -47,8 +47,8 @@ function SwapPanel() {
   };
 
   return (
-    <div className="w-[90%] lg:w-2/3 px-4 mx-auto mt-24 lg:px-14">
-      <div className="flex flex-col lg:flex-row gap-6 items-start">
+    <div className="w-[90%] lg:w-2/3  px-4 mx-auto mt-24 lg:px-14">
+      <div className="flex flex-col md:flex-col lg:flex-row gap-6">
         {/* LEFT: Swap Panel */}
         <div className="bg-gray-900 rounded-3xl px-4 py-10 lg:px-6 lg:w-3/4 mx-auto">
           <form
@@ -68,7 +68,7 @@ function SwapPanel() {
                   </p>
                 </div>
               </div>
-              <div className="border-gray-800 border-[1px] py-2 px-3 rounded-lg mb-16">
+              <div className="border-gray-800 border-[1px] py-2 px-3 rounded-lg mb-12">
                 <div className="flex items-center justify-between">
                   <div>
                     {/* Token button for "to" selection */}
@@ -130,7 +130,7 @@ function SwapPanel() {
             </div>
 
             {/* to section */}
-            <div className="mt-10 ">
+            <div className="mt-4 ">
               <div className="font-semibold mb-2 text-gray-300">
                 <div className="flex text-sm items-center justify-between">
                   <p>To</p>
@@ -152,7 +152,7 @@ function SwapPanel() {
                       }}
                       className="text-xs lg:text-sm w-40 px-3 py-7 bg-gray-800 bg-opacity-45 text-gray-200 font-bold rounded-lg focus:outline-none flex items-center justify-center"
                     >
-                      <div className="flex items-center mr-2 text-gray-200">
+                      <div className="flex items-center mr-2">
                         <Image
                           src={toToken.logo}
                           alt={toToken.name}
@@ -232,7 +232,7 @@ function SwapPanel() {
           <div className="relative">
             {/* Vertical line behind the numbered circles */}
             <div className="absolute left-4 top-8 bottom-0 w-px bg-gray-950"></div>
-            <ol className="space-y-12">
+            <ol className="space-y-8">
               {instructions.map((text, index) => (
                 <li key={index} className="flex items-start">
                   <div className="relative flex-shrink-0">
@@ -254,3 +254,32 @@ function SwapPanel() {
 }
 
 export default SwapPanel;
+
+{
+  /* RIGHT: Instruction Card */
+}
+{
+  /* <div className="bg-gray-900 rounded-3xl p-6 lg:w-2/4 mx-auto">
+<h2 className="text-2xl text-gray-200 mb-6 text-left">Swap</h2>
+<div className="relative"> */
+}
+{
+  /* Vertical line behind the numbered circles */
+}
+//   <div className="absolute left-4 top-8 bottom-0 w-px bg-gray-950"></div>
+//   <ol className="space-y-12">
+//     {instructions.map((text, index) => (
+//       <li key={index} className="flex items-start">
+//         <div className="relative flex-shrink-0">
+//           <span className="flex items-center justify-center w-8 h-8 rounded-full text-sm text-gray-200 font-bold bg-gray-950">
+//             {index + 1}
+//           </span>
+//         </div>
+//         <div className="ml-4">
+//           <p className="text-gray-200">{text}</p>
+//         </div>
+//       </li>
+//     ))}
+//   </ol>
+// </div>
+// </div>

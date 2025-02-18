@@ -84,7 +84,7 @@ function Header() {
       >
         <div className="p-4 flex justify-end">
           <button onClick={() => setMobileMenuOpen(false)}>
-            <X size={24} className="text-white" />
+            <X size={24} className="text-gray-200" />
           </button>
         </div>
         <ul className="flex flex-col space-y-10 p-5">
