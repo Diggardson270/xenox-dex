@@ -39,7 +39,7 @@ function Header() {
             : "absolute top-8 bg-gray-900"
         }`}
       >
-        <nav className="font-bold flex items-center justify-between text-white px-4">
+        <nav className="font-bold flex items-center justify-between text-white px-2">
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold uppercase">
             <span className="text-4xl text-red-700">X</span>enox
@@ -58,26 +58,26 @@ function Header() {
             </button>
 
             {/* Mobile Menu Button */}
-            <button
+            {/* <button
               onClick={() => setMobileMenuOpen(true)}
               className="lg:hidden ml-4"
             >
               <Menu size={24} />
-            </button>
+            </button> */}
           </div>
         </nav>
       </header>
 
       {/* Backdrop Overlay for Mobile */}
-      <div
+      {/* <div
         className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ${
           mobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setMobileMenuOpen(false)}
-      ></div>
+      ></div> */}
 
       {/* Mobile Menu (slides in from the right) */}
-      <div
+      {/* <div
         className={`fixed top-0 right-0 h-full w-2/3 max-w-xs bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
           mobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
@@ -101,7 +101,7 @@ function Header() {
             </button>
           </li>
         </ul>
-      </div>
+      </div> */}
     </>
   );
 }

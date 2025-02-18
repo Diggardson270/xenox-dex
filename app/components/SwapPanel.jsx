@@ -38,7 +38,7 @@ function SwapPanel() {
     <div className="container px-4 mx-auto mt-24 lg:px-14">
       <div className="flex flex-col md:flex-col lg:flex-row gap-6">
         {/* LEFT: Swap Panel */}
-        <div className="bg-gray-900 rounded-lg p-6 lg:w-1/2 max-w-xl mx-auto relative">
+        <div className="bg-gray-900 rounded-3xl px-2 py-10 lg:px-6 lg:w-1/2 max-w-xl mx-auto relative">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -167,21 +167,14 @@ function SwapPanel() {
                 onClick={() => setModalOpen(false)}
               ></div>
               {/* Modal Content */}
-              <div className="bg-gray-800 p-4 rounded-lg z-10 max-w-sm w-full">
+              <div className="w-[90%] bg-gray-950 p-4 rounded-lg z-10 max-w-sm">
                 <h2 className="text-xl text-white mb-4">Select a token</h2>
                 <ul>
                   {tokens.map((token) => (
-                    <li key={token.name} className="mb-2 flex items-center">
-                      <Image
-                        src={token.logo}
-                        alt={token.name}
-                        width={24}
-                        height={24}
-                        className="mr-2"
-                      />
+                    <li key={token.name} className="mb-2  flex items-center">
                       <button
                         type="button"
-                        className="w-full text-left px-4 py-2 bg-gray-700 text-white hover:bg-gray-600 rounded"
+                        className="w-full h-20 flex items-center justify-center text-left px-4 py-2 bg-gray-900 text-white hover:bg-gray-600 rounded"
                         onClick={() => {
                           if (activeTokenField === "from") {
                             setFromToken(token);
@@ -191,6 +184,13 @@ function SwapPanel() {
                           setModalOpen(false);
                         }}
                       >
+                        <Image
+                          src={token.logo}
+                          alt={token.name}
+                          width={24}
+                          height={24}
+                          className="mr-2"
+                        />
                         {token.name}
                       </button>
                     </li>
