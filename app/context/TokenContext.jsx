@@ -18,7 +18,7 @@ export function TokenProvider({ children }) {
     async function fetchTokens() {
       try {
         setLoading(true);
-        const response = await fetch("https://token.jup.ag/tokens/v1/new");
+        const response = await fetch("https://api.jup.ag/tokens/v1/new");
         const data = await response.json();
         setTokens(data);
       } catch (error) {
