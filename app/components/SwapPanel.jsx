@@ -35,7 +35,7 @@ function SwapPanel() {
   };
 
   return (
-    <div className="container px-2 mx-auto mt-24 lg:px-14">
+    <div className="container px-4 mx-auto mt-24 lg:px-14">
       <div className="flex flex-col md:flex-col lg:flex-row gap-6">
         {/* LEFT: Swap Panel */}
         <div className="bg-gray-900 rounded-lg p-6 lg:w-1/2 max-w-xl mx-auto relative">
