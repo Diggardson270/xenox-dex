@@ -35,10 +35,10 @@ function SwapPanel() {
   };
 
   return (
-    <div className="container mx-auto mt-24 px-14">
-      <div className="flex flex-col lg:flex-row gap-6">
+    <div className="container px-5 mx-auto mt-24 lg:px-14">
+      <div className="flex flex-col md:flex-col lg:flex-row gap-6">
         {/* LEFT: Swap Panel */}
-        <div className="bg-gray-800 rounded-lg p-6 lg:w-1/2 max-w-2xl border border-gray-700 mx-auto relative">
+        <div className="bg-gray-900 rounded-lg p-6 lg:w-1/2 max-w-xl mx-auto relative">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -47,7 +47,7 @@ function SwapPanel() {
           >
             {/* From Section */}
             <div className="mt-5">
-              <div className="font-semibold mb-2 text-red-700">
+              <div className="font-semibold mb-2 text-gray-300">
                 <div className="flex text-sm items-center justify-between">
                   <p>From</p>
                   <p>
@@ -56,7 +56,7 @@ function SwapPanel() {
                   </p>
                 </div>
               </div>
-              <div className="border border-gray-100  mb-20 py-10 px-5 rounded-3xl">
+              <div className="border-gray-800 border-[1px] mb-10 py-8 px-5 rounded-3xl">
                 <div className="flex items-center justify-between">
                   {/* Token button for "from" selection */}
                   <button
@@ -65,14 +65,14 @@ function SwapPanel() {
                       setActiveTokenField("from");
                       setModalOpen(true);
                     }}
-                    className="w-32 px-6 py-3 bg-gray-700 text-white font-bold rounded-3xl focus:outline-none flex items-center justify-center"
+                    className="text-xs w-32 px-3 py-3 bg-gray-800 text-white font-bold rounded-3xl focus:outline-none flex items-center justify-center"
                   >
                     <div className="flex items-center mr-2">
                       <Image
                         src={fromToken.logo}
                         alt={fromToken.name}
-                        width={20} // Adjust width and height as needed
-                        height={20}
+                        width={15} // Adjust width and height as needed
+                        height={15}
                         className="mr-2"
                       />
                       {fromToken.name}
@@ -86,7 +86,7 @@ function SwapPanel() {
                       placeholder="0"
                       value={fromAmount}
                       onChange={(e) => setFromAmount(e.target.value)}
-                      className="w-full text-3xl text-right p-2 rounded bg-transparent text-white focus:outline-none"
+                      className="w-full text-3xl text-right p-2 rounded bg-gray-800 text-white focus:outline-none"
                     />
                   </div>
                 </div>
@@ -96,9 +96,13 @@ function SwapPanel() {
 
             {/* Center Arrow Icon for Swap (clickable) */}
             <div className="relative flex justify-center my-6">
+              {/* Horizontal Line */}
+              <hr className="absolute top-1/2 left-0 w-full border-t-[px] border-slate-900" />
+
+              {/* Swap Icon */}
               <div
                 onClick={handleSwap}
-                className="cursor-pointer bg-gradient-to-bl from-black to-red-500 rounded-full p-2 absolute top-1/2 transform -translate-y-1/2"
+                className="cursor-pointer bg-black rounded-lg py-2 px-3 absolute top-1/2 transform -translate-y-1/2 z-10"
               >
                 <ArrowUpDown size={14} className="text-white" />
               </div>
@@ -106,7 +110,7 @@ function SwapPanel() {
 
             {/* to section */}
             <div className="mt-2 ">
-              <div className="font-semibold mb-4 text-red-700">
+              <div className="font-semibold mb-2 text-gray-300">
                 <div className="flex text-sm items-center justify-between">
                   <p>To</p>
                   <p>
@@ -115,7 +119,7 @@ function SwapPanel() {
                   </p>
                 </div>
               </div>
-              <div className="border border-gray-100  mb-20 py-10 px-5 rounded-3xl">
+              <div className="border-gray-800 border-[1px] py-8 px-5 rounded-3xl">
                 <div className="flex items-center justify-between">
                   {/* Token button for "to" selection */}
                   <button
@@ -124,14 +128,14 @@ function SwapPanel() {
                       setActiveTokenField("to");
                       setModalOpen(true);
                     }}
-                    className="w-32 px-6 py-3 bg-gray-700 text-white font-bold rounded-3xl focus:outline-none flex items-center justify-center"
+                    className="text-xs w-32 px-3 py-3 bg-gray-800 text-white font-bold rounded-3xl focus:outline-none flex items-center justify-center"
                   >
                     <div className="flex items-center mr-2">
                       <Image
                         src={toToken.logo}
                         alt={toToken.name}
-                        width={20} // Adjust width and height as needed
-                        height={20}
+                        width={15} // Adjust width and height as needed
+                        height={15}
                         className="mr-2"
                       />
                       {toToken.name}
@@ -198,8 +202,8 @@ function SwapPanel() {
         </div>
 
         {/* RIGHT: Instruction Card */}
-        <div className="bg-gray-800 rounded-lg p-6 lg:w-1/2 max-w-2xl border border-gray-700 mx-auto ">
-          <h2 className="text-2xl text-teal-600 mb-4">Swap</h2>
+        <div className="bg-gray-900 rounded-lg p-6 lg:w-1/2 max-w-xl mx-auto ">
+          <h2 className="text-2xl text-red-600 mb-4">Swap</h2>
           <ol className="list-decimal list-inside text-white space-y-10">
             <li className="mb-2">
               Select the currency you want to swap from and enter the amount.

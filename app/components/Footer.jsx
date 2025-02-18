@@ -5,7 +5,7 @@ import Link from "next/link";
 
 function Footer() {
   return (
-    <footer className="bg-gray-900 border border-gray-700 rounded-3xl w-full max-w-7xl mx-auto px-6 md:px-8 py-6 text-center text-white mt-6 relative bottom-6 shadow-lg">
+    <footer className="bg-gray-900 border border-gray-700 rounded-3xl w-[90%]  z-50 max-w-7xl mx-auto px-6 md:px-8 py-6 text-center text-white relative bottom-6 shadow-lg">
       <div className="container mx-auto flex flex-col items-center space-y-6">
         <p className="text-gray-200 max-w-2xl text-lg font-semibold leading-relaxed">
           <span className="text-blue-400">XENOX DEX</span> is the fastest DEX

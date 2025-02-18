@@ -33,7 +33,7 @@ function Header() {
     <>
       {/* Header Container */}
       <header
-        className={`transition-all duration-300 px-4 py-4 border border-gray-700 rounded-3xl w-full max-w-7xl z-50 left-1/2 transform -translate-x-1/2 ${
+        className={`transition-all duration-300 px-4 md:px-8 py-4 rounded-xl w-[90%] max-w-7xl mx-auto z-50 left-1/2 transform -translate-x-1/2 ${
           isFixed
             ? "fixed top-0 bg-gray-900 shadow-lg"
             : "absolute top-8 bg-gray-900"
@@ -42,7 +42,7 @@ function Header() {
         <nav className="font-bold flex items-center justify-between text-white px-4">
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold uppercase">
-            Xenox
+            <span className="text-4xl text-red-700">X</span>enox
           </Link>
 
           {/* Desktop Navigation */}
@@ -51,9 +51,9 @@ function Header() {
             {/* Desktop Connect Button */}
             <button
               onClick={handleConnect}
-              className="hidden lg:flex gap-3 bg-opacity-90 bg-red-500 hover:bg-red-400 text-gray-800 font-extrabold py-2 px-4 rounded"
+              className="flex text-sm justify-between items-center gap-1  text-gray-200 font-bold py-2 px-4 rounded"
             >
-              <Wallet />
+              <Wallet size={12} className="text-yellow-500" />
               <p>Swap Wallet</p>
             </button>
 
