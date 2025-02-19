@@ -71,7 +71,7 @@ function SwapPanel() {
   
         axios.request(config)
         .then((response) => {
-          console.log(JSON.stringify(response.data));
+          toPrice = JSON.stringify(response.data);
         })
         .catch((error) => {
           console.log(error);
@@ -88,7 +88,7 @@ function SwapPanel() {
   
         axios.request(config)
         .then((response) => {
-          console.log(JSON.stringify(response.data));
+          fromPrice = JSON.stringify(response.data);
         })
         .catch((error) => {
           console.log(error);
