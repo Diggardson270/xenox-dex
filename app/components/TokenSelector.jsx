@@ -17,6 +17,7 @@ export default function TokenSelector({
 }) {
   const { tokens, loading } = useTokens();
   const [searchQuery, setSearchQuery] = useState("");
+  const [displayCount, setDisplayCount] = useState(10);
 
   // Disable scrolling when modal is open
   useEffect(() => {
@@ -35,6 +36,9 @@ export default function TokenSelector({
     token.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Get a paginated slice of tokens
+  const displayedTokens = filteredTokens.slice(0, displayCount);
+
   function pasrseLogoURI(logo) {
     if (!logo) {
       return sol;
@@ -44,6 +48,14 @@ export default function TokenSelector({
     }
     return logo;
   }
+
+  const handleScroll = (event) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.target;
+    if (scrollTop + clientHeight >= scrollHeight - 10) {
+      // Load 10 more tokens when the user scrolls to the bottom
+      setDisplayCount((prev) => Math.min(prev + 10, filteredTokens.length));
+    }
+  };
 
   if (!modalOpen) return null;
 
@@ -77,7 +89,10 @@ export default function TokenSelector({
             type="text"
             placeholder="SOL, USDC, JLP...."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value); 
+              setDisplayCount(10)
+            }}
             className="w-full pl-10 pr-4 py-4 mb-2 rounded-lg border border-gray-700 bg-transparent text-gray-500 placeholder:text-gray-700 outline-none focus:border-gray-500"
           />
         </div>
@@ -85,8 +100,8 @@ export default function TokenSelector({
         {loading ? (
           <p className="text-gray-400 text-center">Loading tokens...</p>
         ) : (
-          <ul className="modal overflow-auto max-h-[400px] mt-10 py-5">
-            {filteredTokens.map((token) => (
+          <ul className="modal overflow-auto max-h-[400px] mt-10 py-5" onScroll={handleScroll}>
+            {displayedTokens.map((token) => (
               <li
                 key={token.address}
                 className="mb-2 flex items-center justify-center"

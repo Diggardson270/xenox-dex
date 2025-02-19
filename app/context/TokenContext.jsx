@@ -20,8 +20,7 @@ export function TokenProvider({ children }) {
         setLoading(true);
 
         const data = require("../../solana_data_sorted.json");
-        console.log(data[7]);
-        setTokens(data.slice(0, 10));
+        setTokens(data);
       } catch (error) {
         console.error("Error fetching tokens:", error);
       } finally {

@@ -38,6 +38,8 @@ function SwapPanel() {
   const [modalOpen, setModalOpen] = useState(false);
   const [activeTokenField, setActiveTokenField] = useState(null);
 
+  const [quoteLoading, setQuoteLoading] = useState(false);
+
   // State for error popup
   const [errorPopup, setErrorPopup] = useState({ show: false, message: "" });
 
@@ -52,6 +54,7 @@ function SwapPanel() {
   };
 
   const getSwapValue = () => {
+    setQuoteLoading(true);
     const config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -82,6 +85,9 @@ function SwapPanel() {
         } else {
           console.error(error);
         }
+      })
+      .finally(()=>{
+        setQuoteLoading(false);
       });
   };
 
@@ -113,11 +119,9 @@ function SwapPanel() {
           const res = await axios.get(
             `https://api.coingecko.com/api/v3/simple/price?ids=${fromToken.extensions.coingeckoId}&vs_currencies=usd`
           );
+          const price = res.data[fromToken.coingeckoId]?.usd || 0;
+          setFromUSD((parseFloat(fromAmount) * price).toFixed(2));
         }
-
-        const price = res.data[fromToken.coingeckoId]?.usd || 0;
-        console.log(fromToken);
-        setFromUSD((parseFloat(fromAmount) * price).toFixed(2));
       } catch (error) {
         console.error("Error fetching USD price for from token:", error);
       }
@@ -137,11 +141,13 @@ function SwapPanel() {
 
     const fetchToPrice = async () => {
       try {
-        const res = await axios.get(
-          `https://api.coingecko.com/api/v3/simple/price?ids=${toToken.name}&vs_currencies=usd`
-        );
-        const price = res.data[toToken.coingeckoId]?.usd || 0;
-        setToUSD((parseFloat(toAmount) * price).toFixed(2));
+        if (toToken.extensions.coingeckoId){
+          const res = await axios.get(
+            `https://api.coingecko.com/api/v3/simple/price?ids=${toToken.name}&vs_currencies=usd`
+          );
+          const price = res.data[toToken.coingeckoId]?.usd || 0;
+          setToUSD((parseFloat(toAmount) * price).toFixed(2));  
+        }
       } catch (error) {
         console.error("Error fetching USD price for to token:", error);
       }
@@ -257,7 +263,8 @@ function SwapPanel() {
                     </p>
                   </div>
                 </div>
-                <div className="border-gray-800 border-[1px] py-2 px-3 rounded-lg">
+                {/* <div className="border-gray-800 border-[1px] py-2 px-3 rounded-lg"> */}
+                <div className={`border-gray-800 border-[1px] py-2 px-3 rounded-lg ${quoteLoading ? "animate-pulse" : ""}`}>
                   <div className="flex items-center justify-between">
                     <div>
                       <button
