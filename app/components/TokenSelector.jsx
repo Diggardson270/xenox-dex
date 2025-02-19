@@ -56,7 +56,7 @@ export default function TokenSelector({
       ></div>
 
       {/* Modal Content */}
-      <div className="relative w-[90%] bg-gray-900 px-4 py-10 lg:px-10 rounded-lg z-10 max-w-xl">
+      <div className=" relative w-[90%] bg-gray-900 px-4 py-10 lg:px-10 rounded-lg z-10 max-w-xl">
         {/* Close Icon */}
         <div
           className="absolute top-11 right-11 cursor-pointer"
@@ -85,7 +85,7 @@ export default function TokenSelector({
         {loading ? (
           <p className="text-gray-400 text-center">Loading tokens...</p>
         ) : (
-          <ul className="overflow-auto max-h-[400px] mt-10 py-5">
+          <ul className="modal overflow-auto max-h-[400px] mt-10 py-5">
             {filteredTokens.map((token) => (
               <li
                 key={token.address}

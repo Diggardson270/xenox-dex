@@ -41,8 +41,8 @@ function Header() {
       >
         <nav className="font-bold flex items-center justify-between text-gray-200 px-2">
           {/* Logo */}
-          <Link href="/" className="text-2xl font-bold uppercase">
-            <span className="text-4xl text-red-700">X</span>enox
+          <Link href="/" className="text-base lg:text-2xl font-bold uppercase">
+            <span className="text-2xl lg:text-4xl text-red-700">X</span>enox
           </Link>
 
           {/* Desktop Navigation */}

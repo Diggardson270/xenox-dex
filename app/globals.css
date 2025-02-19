@@ -15,3 +15,27 @@
   align-items: center;
   color: white;
 }
+
+/* Removal of input arrows display */
+input[type="number"]::-webkit-inner-spin-button {
+  display: none;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Custom scrollbar styles specifically for the modal */
+.modal::-webkit-scrollbar {
+  width: 5px;
+}
+
+.modal::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.062);
+  border-radius: 10px;
+  width: 10px;
+}

@@ -45,8 +45,14 @@ export default function CryptoReading() {
 
         {/* Xenox */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <Image src={xenox} alt="Xenox" width={30} height={30} />
+          <div className="flex space-x-3">
+            <Image
+              className=""
+              src={xenox}
+              alt="Xenox"
+              width={30}
+              height={30}
+            />
             <div>
               <p className="font-bold">
                 XENOX <span className="text-gray-400">Xenox</span>
