@@ -54,7 +54,7 @@ function Header() {
               className="flex text-base justify-between items-center gap-1  text-gray-200 font-bold py-2 px-4 rounded"
             >
               <Wallet size={14} className="text-red-700" />
-              <p>Swap Wallet</p>
+              <p>Connect Wallet</p>
             </button>
 
             {/* Mobile Menu Button */}

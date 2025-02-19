@@ -9,7 +9,7 @@ import TokenSelector from "./TokenSelector";
 import { useTokens } from "../context/TokenContext";
 
 function SwapPanel() {
-  const axios = require('axios');
+  const axios = require("axios");
   const { tokens, loading } = useTokens();
   const instructions = [
     "Select the currency you want to swap from and enter the amount.",
@@ -28,9 +28,9 @@ function SwapPanel() {
   const [toAmount, setToAmount] = useState("");
   const [toAddress, setToAddress] = useState({});
   const [toUSD, setToUSD] = useState("0");
-  
+
   const [timeoutId, setTimeoutId] = useState(null);
-  
+
   // Toggle icon state for swap arrow
   const [isSwapped, setIsSwapped] = useState(false);
 
@@ -50,28 +50,29 @@ function SwapPanel() {
 
   const getSwapValue = () => {
     let config = {
-      method: 'get',
+      method: "get",
       maxBodyLength: Infinity,
-      url: 'https://api.jup.ag/swap/v1/quote',
+      url: "https://api.jup.ag/swap/v1/quote",
       headers: {
-        'Accept': 'application/json'
+        Accept: "application/json",
       },
       params: {
-        inputMint:fromAddress,
-        outputMint:toAddress,
-        amount:fromAmount
-      }
+        inputMint: fromAddress,
+        outputMint: toAddress,
+        amount: fromAmount,
+      },
     };
 
-    axios.request(config).then((response) => {
-      let value = response.data;
-      setToAmount(value.outAmount)
-    }).catch((error) => {
-      console.log(error)
-    });
-
-    
-  }
+    axios
+      .request(config)
+      .then((response) => {
+        let value = response.data;
+        setToAmount(value.outAmount);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   useEffect(() => {
     if (!fromAmount) return; // prevent unnecessary API calls
@@ -90,36 +91,33 @@ function SwapPanel() {
   }, [fromAmount]); // re-run effect when fromAmount changes
 
   // TODO: UPDATE USD PRICE
-  // useEffect(() => {
-    
+  useEffect(() => {
+    const fetchUSDPrice = async () => {
+      if (!fromAmount) return; // prevent unnecessary API calls
+      try {
+        const res = await axios.get(
+          `https://api.coingecko.com/api/v3/simple/price?ids=${fromAmount}&vs_currencies=usd`
+        );
+        setFromUSD(res.data);
+      } catch (error) {
+        console.error("Error fetching crypto prices:", error);
+      }
 
-  //   const fetchUSDPrice = async () => {
-  //     if (!fromAmount) return; // prevent unnecessary API calls
-  //     try {
-  //       const res = await axios.get(
-  //         `https://api.coingecko.com/api/v3/simple/price?ids=${fromAmount}&vs_currencies=usd`
-  //       );
-  //       setFromUSD(res.data);
-  //     } catch (error) {
-  //       console.error("Error fetching crypto prices:", error);
-  //     }
+      if (!toAmount) return; // prevent unnecessary API calls
+      try {
+        const res = await axios.get(
+          `https://api.coingecko.com/api/v3/simple/price?ids=${toAmount}&vs_currencies=usd`
+        );
+        setToUSD(res.data);
+      } catch (error) {
+        console.error("Error fetching crypto prices:", error);
+      }
+    };
 
-  //     if (!toAmount) return; // prevent unnecessary API calls
-  //     try {
-  //       const res = await axios.get(
-  //         `https://api.coingecko.com/api/v3/simple/price?ids=${toAmount}&vs_currencies=usd`
-  //       );
-  //       setToUSD(res.data);
-  //     } catch (error) {
-  //       console.error("Error fetching crypto prices:", error);
-  //     }
-  //   };
-
-
-  //   fetchUSDPrice();
-  //   const interval = setInterval(fetchUSDPrice, 100); // Refresh every 60 seconds
-  //   return () => clearInterval(interval);
-  // }, []);
+    fetchUSDPrice();
+    const interval = setInterval(fetchUSDPrice, 100); // Refresh every 60 seconds
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="w-[90%] lg:w-2/3 px-4 mx-auto mt-24 lg:px-14">

@@ -49,14 +49,12 @@ export default function CryptoReading() {
             <Image src={xenox} alt="Xenox" width={30} height={30} />
             <div>
               <p className="font-bold">
-                ORCA <span className="text-gray-400">Xenox</span>
+                XENOX <span className="text-gray-400">Xenox</span>
               </p>
               <p className="text-gray-500 text-sm">Xenox...csmf</p>
             </div>
           </div>
-          <p className="text-lg font-semibold">
-            $0.99
-          </p>
+          <p className="text-lg font-semibold">$0.99</p>
         </div>
       </div>
     </div>
