@@ -32,15 +32,13 @@ export default function CryptoReading() {
           <div className="flex items-center space-x-3">
             <Image src={sol} alt="Solana" width={30} height={30} />
             <div>
-              <p className="font-bold">
-                SOL <span className="text-gray-400">Solana</span>
+              <p className="font-bold text-sm">
+                SOL <span className="text-gray-400 text-xs">Solana</span>
               </p>
               <p className="text-gray-500 text-sm">$so1...1112</p>
             </div>
           </div>
-          <p className="text-lg font-semibold">
-            ${prices.solana?.usd?.toFixed(2)}
-          </p>
+          <p className="font-semibold">${prices.solana?.usd?.toFixed(2)}</p>
         </div>
 
         {/* Xenox */}
@@ -54,13 +52,13 @@ export default function CryptoReading() {
               height={30}
             />
             <div>
-              <p className="font-bold">
-                XENOX <span className="text-gray-400">Xenox</span>
+              <p className="font-bold text-sm">
+                XENOX <span className="text-gray-400 text-xs">Xenox</span>
               </p>
               <p className="text-gray-500 text-sm">Xenox...csmf</p>
             </div>
           </div>
-          <p className="text-lg font-semibold">$0.99</p>
+          <p className="font-semibold">$0.99</p>
         </div>
       </div>
     </div>

@@ -1,18 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  ArrowUpDown,
-  ArrowDownUp,
-  ChevronDown,
-  Loader2, // Import spinner icon from lucide-react
-} from "lucide-react";
+import { ArrowUpDown, ArrowDownUp, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import sol from "../../public/solana-sol-logo.svg";
 import CryptoReading from "./CryptoReading";
 import TokenSelector from "./TokenSelector";
 import { useTokens } from "../context/TokenContext";
-import axios from "axios";
+import axios from "axios"; // Using import instead of require
 
 function SwapPanel() {
   const { tokens, loading } = useTokens();
@@ -23,29 +18,28 @@ function SwapPanel() {
     "Review the transaction details and confirm.",
   ];
 
-  // Token and amount states
+  // Store selected tokens (start with empty objects or fallback data)
   const [fromToken, setFromToken] = useState({});
   const [toToken, setToToken] = useState({});
   const [fromAddress, setFromAddress] = useState("");
   const [fromUSD, setFromUSD] = useState("0");
+
   const [fromAmount, setFromAmount] = useState("");
   const [toAmount, setToAmount] = useState("");
   const [toAddress, setToAddress] = useState("");
   const [toUSD, setToUSD] = useState("0");
+
   const [timeoutId, setTimeoutId] = useState(null);
 
-  // Swap toggle
+  // Toggle icon state for swap arrow
   const [isSwapped, setIsSwapped] = useState(false);
 
-  // Modal and token field management
+  // Manage modal open/close and active field
   const [modalOpen, setModalOpen] = useState(false);
   const [activeTokenField, setActiveTokenField] = useState(null);
 
-  // Error popup state
+  // State for error popup
   const [errorPopup, setErrorPopup] = useState({ show: false, message: "" });
-
-  // New state for showing loading spinner during API call
-  const [isFetchingSwapValue, setIsFetchingSwapValue] = useState(false);
 
   const handleSwap = () => {
     setIsSwapped((prev) => !prev);
@@ -58,9 +52,6 @@ function SwapPanel() {
   };
 
   const getSwapValue = () => {
-    // Begin loading spinner
-    setIsFetchingSwapValue(true);
-
     const config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -78,7 +69,7 @@ function SwapPanel() {
     axios
       .request(config)
       .then((response) => {
-        const value = response.data;
+        let value = response.data;
         setToAmount(value.outAmount);
       })
       .catch((error) => {
@@ -91,16 +82,12 @@ function SwapPanel() {
         } else {
           console.error(error);
         }
-      })
-      .finally(() => {
-        // Stop loading spinner
-        setIsFetchingSwapValue(false);
       });
   };
 
   // Debounce API calls when fromAmount changes
   useEffect(() => {
-    if (!fromAmount) return;
+    if (!fromAmount) return; // prevent unnecessary API calls
 
     if (timeoutId) clearTimeout(timeoutId);
 
@@ -115,17 +102,21 @@ function SwapPanel() {
 
   // Update USD conversion for the "from" token
   useEffect(() => {
-    if (!fromToken || !fromToken.coingeckoId || !fromAmount) {
+    if (!fromToken || !fromToken.name || !fromAmount) {
       setFromUSD("0");
       return;
     }
 
     const fetchFromPrice = async () => {
       try {
-        const res = await axios.get(
-          `https://api.coingecko.com/api/v3/simple/price?ids=${fromToken.coingeckoId}&vs_currencies=usd`
-        );
+        if (fromToken.extensions.coingeckoId) {
+          const res = await axios.get(
+            `https://api.coingecko.com/api/v3/simple/price?ids=${fromToken.extensions.coingeckoId}&vs_currencies=usd`
+          );
+        }
+
         const price = res.data[fromToken.coingeckoId]?.usd || 0;
+        console.log(fromToken);
         setFromUSD((parseFloat(fromAmount) * price).toFixed(2));
       } catch (error) {
         console.error("Error fetching USD price for from token:", error);
@@ -133,13 +124,13 @@ function SwapPanel() {
     };
 
     fetchFromPrice();
-    const interval = setInterval(fetchFromPrice, 60000);
+    const interval = setInterval(fetchFromPrice, 60000); // refresh every 60 seconds
     return () => clearInterval(interval);
   }, [fromAmount, fromToken]);
 
   // Update USD conversion for the "to" token
   useEffect(() => {
-    if (!toToken || !toToken.coingeckoId || !toAmount) {
+    if (!toToken || !toToken.name || !toAmount) {
       setToUSD("0");
       return;
     }
@@ -147,7 +138,7 @@ function SwapPanel() {
     const fetchToPrice = async () => {
       try {
         const res = await axios.get(
-          `https://api.coingecko.com/api/v3/simple/price?ids=${toToken.coingeckoId}&vs_currencies=usd`
+          `https://api.coingecko.com/api/v3/simple/price?ids=${toToken.name}&vs_currencies=usd`
         );
         const price = res.data[toToken.coingeckoId]?.usd || 0;
         setToUSD((parseFloat(toAmount) * price).toFixed(2));
@@ -157,7 +148,7 @@ function SwapPanel() {
     };
 
     fetchToPrice();
-    const interval = setInterval(fetchToPrice, 60000);
+    const interval = setInterval(fetchToPrice, 60000); // refresh every 60 seconds
     return () => clearInterval(interval);
   }, [toAmount, toToken]);
 
@@ -166,7 +157,7 @@ function SwapPanel() {
       <div className="flex flex-col md:flex-col lg:flex-row gap-6">
         {/* LEFT: Swap Panel */}
         <div className="lg:px-6 lg:w-3/4 mx-auto">
-          <div className="bg-gray-900 rounded-3xl py-12 px-4">
+          <div className="bg-gray-900 rounded-3xl py-12 px-4 ">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -243,7 +234,7 @@ function SwapPanel() {
                 <hr className="opacity-45 absolute top-1/2 left-0 w-full border-t border-slate-800" />
                 <div
                   onClick={handleSwap}
-                  className="cursor-pointer bg-gradient-to-br from-red-800 to-gray-950 rounded-lg py-2 px-3 absolute top-1/2 transform -translate-y-1/2 z-10 transition-opacity duration-500"
+                  className="cursor-pointer bg-gray-950 rounded-lg py-2 px-3 absolute top-1/2 transform -translate-y-1/2 z-10 transition-opacity duration-500"
                 >
                   {isSwapped ? (
                     <ArrowDownUp size={14} className="text-gray-200" />
@@ -300,19 +291,16 @@ function SwapPanel() {
                         <ChevronDown size={16} className="text-gray-200" />
                       </button>
                     </div>
-                    <div className="w-1/2 relative">
+                    <div className="w-1/2">
                       <input
                         id="toAmount"
                         type="number"
+                        inputMode="numeric"
                         placeholder="0"
                         value={toAmount}
                         onChange={(e) => setToAmount(e.target.value)}
                         className="w-full text-3xl text-right p-2 rounded bg-transparent text-gray-200 focus:outline-none"
                       />
-                      {/* Show spinner if API call is in progress */}
-                      {isFetchingSwapValue && (
-                        <Loader2 className="absolute text-red-700  right-2 top-6 transform -translate-y-1/2 animate-spin h-10 w-10 " />
-                      )}
                       <div className="flex flex-col items-end pr-6">
                         <p className="text-slate-500 font-bold">~${toUSD}</p>
                       </div>
