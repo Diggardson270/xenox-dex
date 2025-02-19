@@ -7,9 +7,9 @@ import sol from "../../public/solana-sol-logo.svg";
 import CryptoReading from "./CryptoReading";
 import TokenSelector from "./TokenSelector";
 import { useTokens } from "../context/TokenContext";
+import axios from "axios"; // Using import instead of require
 
 function SwapPanel() {
-  const axios = require("axios");
   const { tokens, loading } = useTokens();
   const instructions = [
     "Select the currency you want to swap from and enter the amount.",
@@ -21,12 +21,12 @@ function SwapPanel() {
   // Store selected tokens (start with empty objects or fallback data)
   const [fromToken, setFromToken] = useState({});
   const [toToken, setToToken] = useState({});
-  const [fromAddress, setFromAddress] = useState({});
+  const [fromAddress, setFromAddress] = useState("");
   const [fromUSD, setFromUSD] = useState("0");
 
   const [fromAmount, setFromAmount] = useState("");
   const [toAmount, setToAmount] = useState("");
-  const [toAddress, setToAddress] = useState({});
+  const [toAddress, setToAddress] = useState("");
   const [toUSD, setToUSD] = useState("0");
 
   const [timeoutId, setTimeoutId] = useState(null);
@@ -37,6 +37,9 @@ function SwapPanel() {
   // Manage modal open/close and active field
   const [modalOpen, setModalOpen] = useState(false);
   const [activeTokenField, setActiveTokenField] = useState(null);
+
+  // State for error popup
+  const [errorPopup, setErrorPopup] = useState({ show: false, message: "" });
 
   const handleSwap = () => {
     setIsSwapped((prev) => !prev);
@@ -49,7 +52,7 @@ function SwapPanel() {
   };
 
   const getSwapValue = () => {
-    let config = {
+    const config = {
       method: "get",
       maxBodyLength: Infinity,
       url: "https://api.jup.ag/swap/v1/quote",
@@ -70,54 +73,80 @@ function SwapPanel() {
         setToAmount(value.outAmount);
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response && error.response.status === 400) {
+          setErrorPopup({
+            show: true,
+            message:
+              "Swap cannot be executed for these tokens or amount, please enter a valid amount",
+          });
+        } else {
+          console.error(error);
+        }
       });
   };
 
+  // Debounce API calls when fromAmount changes
   useEffect(() => {
     if (!fromAmount) return; // prevent unnecessary API calls
 
-    // clear previous timer if the user types again
     if (timeoutId) clearTimeout(timeoutId);
 
-    // set a new timeout to fetch data after 1 sec
     const newTimeoutId = setTimeout(() => {
       getSwapValue();
     }, 1000);
 
     setTimeoutId(newTimeoutId);
 
-    return () => clearTimeout(newTimeoutId); // cleanup when component unmounts
-  }, [fromAmount]); // re-run effect when fromAmount changes
+    return () => clearTimeout(newTimeoutId);
+  }, [fromAmount]);
 
-  // TODO: UPDATE USD PRICE
+  // Update USD conversion for the "from" token
   useEffect(() => {
-    const fetchUSDPrice = async () => {
-      if (!fromAmount) return; // prevent unnecessary API calls
-      try {
-        const res = await axios.get(
-          `https://api.coingecko.com/api/v3/simple/price?ids=${fromAmount}&vs_currencies=usd`
-        );
-        setFromUSD(res.data);
-      } catch (error) {
-        console.error("Error fetching crypto prices:", error);
-      }
+    if (!fromToken || !fromToken.coingeckoId || !fromAmount) {
+      setFromUSD("0");
+      return;
+    }
 
-      if (!toAmount) return; // prevent unnecessary API calls
+    const fetchFromPrice = async () => {
       try {
         const res = await axios.get(
-          `https://api.coingecko.com/api/v3/simple/price?ids=${toAmount}&vs_currencies=usd`
+          `https://api.coingecko.com/api/v3/simple/price?ids=${fromToken.coingeckoId}&vs_currencies=usd`
         );
-        setToUSD(res.data);
+        const price = res.data[fromToken.coingeckoId]?.usd || 0;
+        setFromUSD((parseFloat(fromAmount) * price).toFixed(2));
       } catch (error) {
-        console.error("Error fetching crypto prices:", error);
+        console.error("Error fetching USD price for from token:", error);
       }
     };
 
-    fetchUSDPrice();
-    const interval = setInterval(fetchUSDPrice, 100); // Refresh every 60 seconds
+    fetchFromPrice();
+    const interval = setInterval(fetchFromPrice, 60000); // refresh every 60 seconds
     return () => clearInterval(interval);
-  }, []);
+  }, [fromAmount, fromToken]);
+
+  // Update USD conversion for the "to" token
+  useEffect(() => {
+    if (!toToken || !toToken.coingeckoId || !toAmount) {
+      setToUSD("0");
+      return;
+    }
+
+    const fetchToPrice = async () => {
+      try {
+        const res = await axios.get(
+          `https://api.coingecko.com/api/v3/simple/price?ids=${toToken.coingeckoId}&vs_currencies=usd`
+        );
+        const price = res.data[toToken.coingeckoId]?.usd || 0;
+        setToUSD((parseFloat(toAmount) * price).toFixed(2));
+      } catch (error) {
+        console.error("Error fetching USD price for to token:", error);
+      }
+    };
+
+    fetchToPrice();
+    const interval = setInterval(fetchToPrice, 60000); // refresh every 60 seconds
+    return () => clearInterval(interval);
+  }, [toAmount, toToken]);
 
   return (
     <div className="w-[90%] lg:w-2/3 px-4 mx-auto mt-24 lg:px-14">
@@ -180,7 +209,7 @@ function SwapPanel() {
                     </div>
                     <div className="w-1/2">
                       <input
-                        id="toAmount"
+                        id="fromAmount"
                         type="number"
                         placeholder="0"
                         value={fromAmount}
@@ -312,6 +341,23 @@ function SwapPanel() {
         setFromAddress={setFromAddress}
         setToAddress={setToAddress}
       />
+
+      {/* Error Popup */}
+      {errorPopup.show && (
+        <div className="fixed bg-gray-950 bg-opacity-70 inset-0 flex items-center justify-center z-50 ">
+          <div className="bg-gray-950 p-6 rounded-lg shadow-lg max-w-lg">
+            <p className="text-red-700 bg-red-900 p-6 bg-opacity-15 text-sm">
+              {errorPopup.message}
+            </p>
+            <button
+              onClick={() => setErrorPopup({ show: false, message: "" })}
+              className="mt-4 text-sm bg-gray-900 px-4 py-2 rounded text-gray-200"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
