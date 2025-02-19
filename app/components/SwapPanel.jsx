@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { ArrowUpDown, ArrowDownUp, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import sol from "../../public/solana-sol-logo.svg";
+import xenox_logo from "../../public/xenoxlogo.svg";
 import CryptoReading from "./CryptoReading";
 import TokenSelector from "./TokenSelector";
 import { useTokens } from "../context/TokenContext";
@@ -21,12 +22,12 @@ function SwapPanel() {
   // Store selected tokens (start with empty objects or fallback data)
   const [fromToken, setFromToken] = useState({});
   const [toToken, setToToken] = useState({});
-  const [fromAddress, setFromAddress] = useState("");
+  const [fromAddress, setFromAddress] = useState("So11111111111111111111111111111111111111112");
   const [fromUSD, setFromUSD] = useState("0");
 
   const [fromAmount, setFromAmount] = useState("");
   const [toAmount, setToAmount] = useState("");
-  const [toAddress, setToAddress] = useState("");
+  const [toAddress, setToAddress] = useState("Xen-frfrfrfrfrfrfrfrfrfrfr");
   const [toUSD, setToUSD] = useState("0");
 
   const [timeoutId, setTimeoutId] = useState(null);
@@ -54,41 +55,86 @@ function SwapPanel() {
   };
 
   const getSwapValue = () => {
-    setQuoteLoading(true);
-    const config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: "https://api.jup.ag/swap/v1/quote",
-      headers: {
-        Accept: "application/json",
-      },
-      params: {
-        inputMint: fromAddress,
-        outputMint: toAddress,
-        amount: fromAmount,
-      },
-    };
+    if (fromAddress == "Xen-frfrfrfrfrfrfrfrfrfrfr" || toAddress == "Xen-frfrfrfrfrfrfrfrfrfrfr") {
+      setQuoteLoading(true);
+      let fromPrice = 1, toPrice = 1; // default values
+  
+      if (fromAddress == "Xen-frfrfrfrfrfrfrfrfrfrfr") {
+        fromPrice = 0.99; // hardcoded since it's not listed
+        let config = {
+          method: 'get',
+          maxBodyLength: Infinity,
+          url: 'https://api.jup.ag/price/v2',
+          headers: { },
+          params: { ids: toAddress }
+        };
+  
+        axios.request(config)
+        .then((response) => {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      } else {
+        toPrice = 0.99; // hardcoded since it's not listed
+        let config = {
+          method: 'get',
+          maxBodyLength: Infinity,
+          url: 'https://api.jup.ag/price/v2',
+          headers: { },
+          params: { ids: fromAddress }
+        };
+  
+        axios.request(config)
+        .then((response) => {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      }
+  
+      const convertedAmount = (fromAmount * fromPrice) / toPrice;
+      setToAmount(convertedAmount.toFixed(2));
+      setQuoteLoading(false);
+    } else {
+      setQuoteLoading(true);
+      const config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: "https://api.jup.ag/swap/v1/quote",
+        headers: {
+          Accept: "application/json",
+        },
+        params: {
+          inputMint: fromAddress,
+          outputMint: toAddress,
+          amount: fromAmount,
+        },
+      };
 
-    axios
-      .request(config)
-      .then((response) => {
-        let value = response.data;
-        setToAmount(value.outAmount);
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 400) {
-          setErrorPopup({
-            show: true,
-            message:
-              "Swap cannot be executed for these tokens or amount, please enter a valid amount",
-          });
-        } else {
-          console.error(error);
-        }
-      })
-      .finally(()=>{
-        setQuoteLoading(false);
-      });
+      axios
+        .request(config)
+        .then((response) => {
+          let value = response.data;
+          setToAmount(value.outAmount);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 400) {
+            setErrorPopup({
+              show: true,
+              message:
+                "Swap cannot be executed for these tokens or amount, please enter a valid amount",
+            });
+          } else {
+            console.error(error);
+          }
+        })
+        .finally(()=>{
+          setQuoteLoading(false);
+        });  
+    }
   };
 
   // Debounce API calls when fromAmount changes
@@ -198,7 +244,7 @@ function SwapPanel() {
                           {fromToken.logoURI ? (
                             <Image
                               src={fromToken.logoURI}
-                              alt={fromToken.symbol || "From Token"}
+                              alt={fromToken.symbol || "Solana"}
                               width={15}
                               height={15}
                               className="mr-2"
@@ -212,7 +258,7 @@ function SwapPanel() {
                               className="mr-2"
                             />
                           )}
-                          {fromToken.symbol || fromToken.name || "Select Token"}
+                          {fromToken.symbol || fromToken.name || "Solana"}
                         </div>
                         <ChevronDown size={16} className="text-gray-200" />
                       </button>
@@ -286,14 +332,14 @@ function SwapPanel() {
                             />
                           ) : (
                             <Image
-                              src={sol}
+                              src={xenox_logo}
                               alt="Fallback"
                               width={15}
                               height={15}
                               className="mr-2"
                             />
                           )}
-                          {toToken.symbol || toToken.name || "Select Token"}
+                          {toToken.symbol || toToken.name || "Xenox"}
                         </div>
                         <ChevronDown size={16} className="text-gray-200" />
                       </button>

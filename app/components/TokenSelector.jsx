@@ -122,7 +122,7 @@ export default function TokenSelector({
                 >
                   {token.symbol} ({token.name})
                   <Image
-                    src={pasrseLogoURI(token.logoURI)}
+                    src={token.name == 'Xenox' ? token.logoURI:pasrseLogoURI(token.logoURI)}
                     alt={token.symbol}
                     width={32}
                     height={32}
