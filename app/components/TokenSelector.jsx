@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useTokens } from "../context/TokenContext";
+import sol from "../../public/solana-sol-logo.svg";
 
 export default function TokenSelector({
   modalOpen,
@@ -11,6 +12,8 @@ export default function TokenSelector({
   activeTokenField,
   setFromToken,
   setToToken,
+  setFromAddress,
+  setToAddress
 }) {
   const { tokens, loading } = useTokens();
   const [searchQuery, setSearchQuery] = useState("");
@@ -19,6 +22,17 @@ export default function TokenSelector({
   const filteredTokens = tokens.filter((token) =>
     token.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  function pasrseLogoURI(logo){
+    if (!logo) {
+      return sol
+    }
+  
+    if (!logo.startsWith("https://")) {
+      return `https://${logo}`;
+    }
+    return logo;
+  }
 
   if (!modalOpen) return null;
 
@@ -55,21 +69,23 @@ export default function TokenSelector({
                   onClick={() => {
                     if (activeTokenField === "from") {
                       setFromToken(token);
+                      setFromAddress(token.address)
                     } else if (activeTokenField === "to") {
                       setToToken(token);
+                      setToAddress(token.address)
                     }
                     setModalOpen(false);
                   }}
                 >
-                  {token.localImagePath && (
+                  {/* {token.localImagePath && ( */}
                     <Image
-                      src={token.localImagePath}
+                      src={pasrseLogoURI(token.logoURI)}
                       alt={token.symbol}
                       width={32}
                       height={32}
                       className="mr-2 rounded-full"
                     />
-                  )}
+                  {/* )} */}
                   {token.symbol} ({token.name})
                 </button>
               </li>

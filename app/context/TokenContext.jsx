@@ -18,9 +18,9 @@ export function TokenProvider({ children }) {
     async function fetchTokens() {
       try {
         setLoading(true);
-        const response = await fetch("https://api.jup.ag/tokens/v1/new");
-        const data = await response.json();
-        setTokens(data);
+        
+        const data = require('../../solana_data_sorted.json')
+        setTokens(data.slice(0, 10));
       } catch (error) {
         console.error("Error fetching tokens:", error);
       } finally {

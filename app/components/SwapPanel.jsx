@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowUpDown, ArrowDownUp, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import sol from "../../public/solana-sol-logo.svg";
-import btc from "../../public/bitcoin-btc-logo.svg";
-import eth from "../../public/ethereum-eth-logo.svg";
 import CryptoReading from "./CryptoReading";
 import TokenSelector from "./TokenSelector";
+import { useTokens } from "../context/TokenContext";
 
 function SwapPanel() {
+  const axios = require('axios');
+  const { tokens, loading } = useTokens();
   const instructions = [
     "Select the currency you want to swap from and enter the amount.",
     "Select the currency you want to swap to.",
@@ -20,10 +21,16 @@ function SwapPanel() {
   // Store selected tokens (start with empty objects or fallback data)
   const [fromToken, setFromToken] = useState({});
   const [toToken, setToToken] = useState({});
+  const [fromAddress, setFromAddress] = useState({});
+  const [fromUSD, setFromUSD] = useState("0");
 
   const [fromAmount, setFromAmount] = useState("");
   const [toAmount, setToAmount] = useState("");
-
+  const [toAddress, setToAddress] = useState({});
+  const [toUSD, setToUSD] = useState("0");
+  
+  const [timeoutId, setTimeoutId] = useState(null);
+  
   // Toggle icon state for swap arrow
   const [isSwapped, setIsSwapped] = useState(false);
 
@@ -32,13 +39,87 @@ function SwapPanel() {
   const [activeTokenField, setActiveTokenField] = useState(null);
 
   const handleSwap = () => {
-    alert(
-      `Swapping ${fromAmount} ${fromToken.symbol || "Token"} to ${toAmount} ${
-        toToken.symbol || "Token"
-      }`
-    );
     setIsSwapped((prev) => !prev);
+    setFromToken(toToken);
+    setToToken(fromToken);
+    setFromAmount(toAmount);
+    setToAmount(fromAmount);
+    setFromAddress(toAddress);
+    setToAddress(fromAddress);
   };
+
+  const getSwapValue = () => {
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: 'https://api.jup.ag/swap/v1/quote',
+      headers: {
+        'Accept': 'application/json'
+      },
+      params: {
+        inputMint:fromAddress,
+        outputMint:toAddress,
+        amount:fromAmount
+      }
+    };
+
+    axios.request(config).then((response) => {
+      let value = response.data;
+      setToAmount(value.outAmount)
+    }).catch((error) => {
+      console.log(error)
+    });
+
+    
+  }
+
+  useEffect(() => {
+    if (!fromAmount) return; // prevent unnecessary API calls
+
+    // clear previous timer if the user types again
+    if (timeoutId) clearTimeout(timeoutId);
+
+    // set a new timeout to fetch data after 1 sec
+    const newTimeoutId = setTimeout(() => {
+      getSwapValue();
+    }, 1000);
+
+    setTimeoutId(newTimeoutId);
+
+    return () => clearTimeout(newTimeoutId); // cleanup when component unmounts
+  }, [fromAmount]); // re-run effect when fromAmount changes
+
+  // TODO: UPDATE USD PRICE
+  // useEffect(() => {
+    
+
+  //   const fetchUSDPrice = async () => {
+  //     if (!fromAmount) return; // prevent unnecessary API calls
+  //     try {
+  //       const res = await axios.get(
+  //         `https://api.coingecko.com/api/v3/simple/price?ids=${fromAmount}&vs_currencies=usd`
+  //       );
+  //       setFromUSD(res.data);
+  //     } catch (error) {
+  //       console.error("Error fetching crypto prices:", error);
+  //     }
+
+  //     if (!toAmount) return; // prevent unnecessary API calls
+  //     try {
+  //       const res = await axios.get(
+  //         `https://api.coingecko.com/api/v3/simple/price?ids=${toAmount}&vs_currencies=usd`
+  //       );
+  //       setToUSD(res.data);
+  //     } catch (error) {
+  //       console.error("Error fetching crypto prices:", error);
+  //     }
+  //   };
+
+
+  //   fetchUSDPrice();
+  //   const interval = setInterval(fetchUSDPrice, 100); // Refresh every 60 seconds
+  //   return () => clearInterval(interval);
+  // }, []);
 
   return (
     <div className="w-[90%] lg:w-2/3 px-4 mx-auto mt-24 lg:px-14">
@@ -109,7 +190,7 @@ function SwapPanel() {
                         className="w-full text-3xl text-right p-2 rounded bg-transparent text-gray-200 focus:outline-none"
                       />
                       <div className="flex flex-col items-end pr-6">
-                        <p className="text-slate-500 font-bold">~$0</p>
+                        <p className="text-slate-500 font-bold">~${fromUSD}</p>
                       </div>
                     </div>
                   </div>
@@ -166,7 +247,7 @@ function SwapPanel() {
                             />
                           ) : (
                             <Image
-                              src={eth}
+                              src={sol}
                               alt="Fallback"
                               width={15}
                               height={15}
@@ -188,7 +269,7 @@ function SwapPanel() {
                         className="w-full text-3xl text-right p-2 rounded bg-transparent text-gray-200 focus:outline-none"
                       />
                       <div className="flex flex-col items-end pr-6">
-                        <p className="text-slate-500 font-bold">~$0</p>
+                        <p className="text-slate-500 font-bold">~${toUSD}</p>
                       </div>
                     </div>
                   </div>
@@ -230,6 +311,8 @@ function SwapPanel() {
         activeTokenField={activeTokenField}
         setFromToken={setFromToken}
         setToToken={setToToken}
+        setFromAddress={setFromAddress}
+        setToAddress={setToAddress}
       />
     </div>
   );

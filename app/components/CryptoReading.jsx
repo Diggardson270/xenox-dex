@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Image from "next/image";
 import sol from "../../public/solana-sol-logo.svg";
-import orca from "../../public/orca-logo.svg";
+import xenox from "../../public/xenoxlogo.svg";
 
 export default function CryptoReading() {
   const [prices, setPrices] = useState({ solana: 0, orca: 0 });
@@ -43,19 +43,19 @@ export default function CryptoReading() {
           </p>
         </div>
 
-        {/* Orca */}
+        {/* Xenox */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Image src={orca} alt="Orca" width={30} height={30} />
+            <Image src={xenox} alt="Xenox" width={30} height={30} />
             <div>
               <p className="font-bold">
-                ORCA <span className="text-gray-400">Orca</span>
+                ORCA <span className="text-gray-400">Xenox</span>
               </p>
-              <p className="text-gray-500 text-sm">orca...ktZE</p>
+              <p className="text-gray-500 text-sm">Xenox...csmf</p>
             </div>
           </div>
           <p className="text-lg font-semibold">
-            ${prices.orca?.usd?.toFixed(4)}
+            $0.99
           </p>
         </div>
       </div>
