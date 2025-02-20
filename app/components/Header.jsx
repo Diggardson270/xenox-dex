@@ -51,7 +51,7 @@ function Header() {
             {/* Desktop Connect Button */}
             <button
               onClick={handleConnect}
-              className="flex text-base justify-between items-center gap-1  text-gray-200 font-bold py-2 px-4 rounded"
+              className="flex text-sm lg:text-base justify-between items-center gap-1  text-gray-200 font-bold py-2 px-4 rounded"
             >
               <Wallet size={14} className="text-red-700" />
               <p>Connect Wallet</p>

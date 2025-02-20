@@ -22,7 +22,9 @@ function SwapPanel() {
   // Store selected tokens (start with empty objects or fallback data)
   const [fromToken, setFromToken] = useState({});
   const [toToken, setToToken] = useState({});
-  const [fromAddress, setFromAddress] = useState("So11111111111111111111111111111111111111112");
+  const [fromAddress, setFromAddress] = useState(
+    "So11111111111111111111111111111111111111112"
+  );
   const [fromUSD, setFromUSD] = useState("0");
 
   const [fromAmount, setFromAmount] = useState("");
@@ -55,46 +57,52 @@ function SwapPanel() {
   };
 
   const getSwapValue = () => {
-    if (fromAddress == "Xen-frfrfrfrfrfrfrfrfrfrfr" || toAddress == "Xen-frfrfrfrfrfrfrfrfrfrfr") {
+    if (
+      fromAddress == "Xen-frfrfrfrfrfrfrfrfrfrfr" ||
+      toAddress == "Xen-frfrfrfrfrfrfrfrfrfrfr"
+    ) {
       setQuoteLoading(true);
-      let fromPrice = 1, toPrice = 1; // default values
-  
+      let fromPrice = 1,
+        toPrice = 1; // default values
+
       if (fromAddress == "Xen-frfrfrfrfrfrfrfrfrfrfr") {
         fromPrice = 0.99; // hardcoded since it's not listed
         let config = {
-          method: 'get',
+          method: "get",
           maxBodyLength: Infinity,
-          url: 'https://api.jup.ag/price/v2',
-          headers: { },
-          params: { ids: toAddress }
+          url: "https://api.jup.ag/price/v2",
+          headers: {},
+          params: { ids: toAddress },
         };
-  
-        axios.request(config)
-        .then((response) => {
-          toPrice = JSON.stringify(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+
+        axios
+          .request(config)
+          .then((response) => {
+            toPrice = JSON.stringify(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else {
         toPrice = 0.99; // hardcoded since it's not listed
         let config = {
-          method: 'get',
+          method: "get",
           maxBodyLength: Infinity,
-          url: 'https://api.jup.ag/price/v2',
-          headers: { },
-          params: { ids: fromAddress }
+          url: "https://api.jup.ag/price/v2",
+          headers: {},
+          params: { ids: fromAddress },
         };
-  
-        axios.request(config)
-        .then((response) => {
-          fromPrice = JSON.stringify(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+
+        axios
+          .request(config)
+          .then((response) => {
+            fromPrice = JSON.stringify(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
-  
+
       const convertedAmount = (fromAmount * fromPrice) / toPrice;
       setToAmount(convertedAmount.toFixed(2));
       setQuoteLoading(false);
@@ -131,9 +139,9 @@ function SwapPanel() {
             console.error(error);
           }
         })
-        .finally(()=>{
+        .finally(() => {
           setQuoteLoading(false);
-        });  
+        });
     }
   };
 
@@ -187,12 +195,12 @@ function SwapPanel() {
 
     const fetchToPrice = async () => {
       try {
-        if (toToken.extensions.coingeckoId){
+        if (toToken.extensions.coingeckoId) {
           const res = await axios.get(
             `https://api.coingecko.com/api/v3/simple/price?ids=${toToken.name}&vs_currencies=usd`
           );
           const price = res.data[toToken.coingeckoId]?.usd || 0;
-          setToUSD((parseFloat(toAmount) * price).toFixed(2));  
+          setToUSD((parseFloat(toAmount) * price).toFixed(2));
         }
       } catch (error) {
         console.error("Error fetching USD price for to token:", error);
@@ -206,7 +214,7 @@ function SwapPanel() {
 
   return (
     <div className="w-[90%] lg:w-2/3 px-4 mx-auto mt-24 lg:px-14">
-      <div className="flex flex-col md:flex-col lg:flex-row gap-6">
+      <div className="flex flex-col md:flex-col lg:flex-row gap-4 lg:gap-0">
         {/* LEFT: Swap Panel */}
         <div className="lg:px-6 lg:w-3/4 mx-auto">
           <div className="bg-gray-900 rounded-3xl py-12 px-4 ">
@@ -219,7 +227,7 @@ function SwapPanel() {
               {/* From Section */}
               <div>
                 <div className="font-semibold mb-2 text-gray-300">
-                  <div className="flex text-sm items-center justify-between">
+                  <div className="flex text-xs lg:text-sm items-center justify-between">
                     <p>From</p>
                     <p>
                       Balance:{" "}
@@ -238,7 +246,7 @@ function SwapPanel() {
                           setActiveTokenField("from");
                           setModalOpen(true);
                         }}
-                        className="text-xs lg:text-sm w-40 px-3 py-3 lg:py-7 bg-gray-800 bg-opacity-45 text-gray-200 font-bold rounded-lg focus:outline-none flex items-center justify-center"
+                        className="text-xs lg:text-sm w-28 lg:w-40 px-3 py-3 lg:py-7 bg-gray-800 bg-opacity-45 text-gray-200 font-bold rounded-lg focus:outline-none flex items-center justify-center"
                       >
                         <div className="flex items-center mr-2">
                           {fromToken.logoURI ? (
@@ -271,9 +279,9 @@ function SwapPanel() {
                         placeholder="0"
                         value={fromAmount}
                         onChange={(e) => setFromAmount(e.target.value)}
-                        className="w-full text-3xl text-right p-2 rounded bg-transparent text-gray-200 focus:outline-none"
+                        className="w-full text-2xl lg:text-3xl text-right p-2 rounded bg-transparent text-gray-200 focus:outline-none"
                       />
-                      <div className="flex flex-col items-end pr-6">
+                      <div className="text-right pr-[0.6rem]">
                         <p className="text-slate-500 font-bold">~${fromUSD}</p>
                       </div>
                     </div>
@@ -299,7 +307,7 @@ function SwapPanel() {
               {/* To Section */}
               <div className="mt-4">
                 <div className="font-semibold mb-2 text-gray-300">
-                  <div className="flex text-sm items-center justify-between">
+                  <div className="flex text-xs lg:text-sm items-center justify-between">
                     <p>To</p>
                     <p>
                       Balance:{" "}
@@ -310,7 +318,11 @@ function SwapPanel() {
                   </div>
                 </div>
                 {/* <div className="border-gray-800 border-[1px] py-2 px-3 rounded-lg"> */}
-                <div className={`border-gray-800 border-[1px] py-2 px-3 rounded-lg ${quoteLoading ? "animate-pulse" : ""}`}>
+                <div
+                  className={`border-gray-800 border-[1px] py-2 px-3 rounded-lg ${
+                    quoteLoading ? "animate-pulse" : ""
+                  }`}
+                >
                   <div className="flex items-center justify-between">
                     <div>
                       <button
@@ -319,7 +331,7 @@ function SwapPanel() {
                           setActiveTokenField("to");
                           setModalOpen(true);
                         }}
-                        className="text-xs lg:text-sm w-40 px-3 py-3 lg:py-7 bg-gray-800 bg-opacity-45 text-gray-200 font-bold rounded-lg focus:outline-none flex items-center justify-center"
+                        className="text-xs lg:text-sm w-28 lg:w-40 px-3 py-3 lg:py-7 bg-gray-800 bg-opacity-45 text-gray-200 font-bold rounded-lg focus:outline-none flex items-center justify-center"
                       >
                         <div className="flex items-center mr-2">
                           {toToken.logoURI ? (
@@ -352,9 +364,9 @@ function SwapPanel() {
                         placeholder="0"
                         value={toAmount}
                         onChange={(e) => setToAmount(e.target.value)}
-                        className="w-full text-3xl text-right p-2 rounded bg-transparent text-gray-200 focus:outline-none"
+                        className="w-full text-2xl lg:text-3xl text-right p-2 rounded bg-transparent text-gray-200 focus:outline-none"
                       />
-                      <div className="flex flex-col items-end pr-6">
+                      <div className="text-right pr-[0.6rem]">
                         <p className="text-slate-500 font-bold">~${toUSD}</p>
                       </div>
                     </div>
@@ -368,7 +380,7 @@ function SwapPanel() {
         </div>
 
         {/* RIGHT: Instruction Card */}
-        <div className="bg-gray-900 rounded-3xl p-10 lg:w-2/4 mx-auto">
+        <div className="bg-gray-900 rounded-3xl p-5 lg:p-10 lg:w-2/4 mx-auto">
           <h2 className="text-xl text-gray-200 mb-6 text-left">Swap</h2>
           <div className="relative">
             <div className="absolute left-4 top-8 bottom-0 w-px bg-gray-950"></div>
@@ -381,7 +393,7 @@ function SwapPanel() {
                     </span>
                   </div>
                   <div className="ml-4">
-                    <p className="text-gray-200">{text}</p>
+                    <p className="text-gray-200 text-sm lg:text-base">{text}</p>
                   </div>
                 </li>
               ))}
