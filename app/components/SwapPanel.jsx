@@ -126,7 +126,7 @@ function SwapPanel() {
         .request(config)
         .then((response) => {
           let value = response.data;
-          setToAmount(value.outAmount);
+          setToAmount(value.outAmount/1000);
         })
         .catch((error) => {
           if (error.response && error.response.status === 400) {
