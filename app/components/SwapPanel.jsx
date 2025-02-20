@@ -108,6 +108,8 @@ function SwapPanel() {
       setQuoteLoading(false);
     } else {
       setQuoteLoading(true);
+      let fromValue  = fromAmount * (10**fromToken['decimals']);
+      console.log(fromValue);
       const config = {
         method: "get",
         maxBodyLength: Infinity,
@@ -118,7 +120,8 @@ function SwapPanel() {
         params: {
           inputMint: fromAddress,
           outputMint: toAddress,
-          amount: fromAmount,
+          amount: fromValue,
+          onlyDirectRoutes: true,
         },
       };
 
@@ -126,7 +129,9 @@ function SwapPanel() {
         .request(config)
         .then((response) => {
           let value = response.data;
-          setToAmount(value.outAmount/1000);
+          console.log(value)
+          let toValue = value.otherAmountThreshold/(10**toToken['decimals']).toFixed(2);
+          setToAmount(toValue);
         })
         .catch((error) => {
           if (error.response && error.response.status === 400) {
