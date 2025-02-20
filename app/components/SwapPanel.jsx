@@ -130,7 +130,7 @@ function SwapPanel() {
         .then((response) => {
           let value = response.data;
           console.log(value)
-          let toValue = value.otherAmountThreshold/(10**toToken['decimals']).toFixed(2);
+          let toValue = (value.otherAmountThreshold/(10**toToken['decimals'])).toFixed(2);
           setToAmount(toValue);
         })
         .catch((error) => {
