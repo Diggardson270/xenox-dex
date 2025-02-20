@@ -1,23 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
-import { Wallet, ArrowUpDown, ArrowDownUp, ChevronDown } from "lucide-react";
-
+import React, { useState, useEffect } from "react";
+import { ArrowUpDown, ArrowDownUp, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import sol from "../../public/solana-sol-logo.svg";
-import btc from "../../public/bitcoin-btc-logo.svg";
-import eth from "../../public/ethereum-eth-logo.svg";
+import xenox_logo from "../../public/xenoxlogo.svg";
 import CryptoReading from "./CryptoReading";
+import TokenSelector from "./TokenSelector";
+import { useTokens } from "../context/TokenContext";
+import axios from "axios"; // Using import instead of require
 
 function SwapPanel() {
-  // Define token objects (adjust logo paths as needed)
-  const tokens = [
-    { name: "XENOX", logo: sol },
-    { name: "SOL", logo: sol },
-    { name: "BTC", logo: btc },
-    { name: "ETH", logo: eth },
-  ];
-
+  const { tokens, loading } = useTokens();
   const instructions = [
     "Select the currency you want to swap from and enter the amount.",
     "Select the currency you want to swap to.",
@@ -25,31 +19,202 @@ function SwapPanel() {
     "Review the transaction details and confirm.",
   ];
 
-  // Initialize state with token objects
-  const [fromToken, setFromToken] = useState(tokens[0]);
-  const [toToken, setToToken] = useState(tokens[1]);
+  // Store selected tokens (start with empty objects or fallback data)
+  const [fromToken, setFromToken] = useState({});
+  const [toToken, setToToken] = useState({});
+  const [fromAddress, setFromAddress] = useState(
+    "So11111111111111111111111111111111111111112"
+  );
+  const [fromUSD, setFromUSD] = useState("0");
+
   const [fromAmount, setFromAmount] = useState("");
   const [toAmount, setToAmount] = useState("");
+  const [toAddress, setToAddress] = useState("Xen-frfrfrfrfrfrfrfrfrfrfr");
+  const [toUSD, setToUSD] = useState("0");
 
-  // State to manage the toggle between icons
+  const [timeoutId, setTimeoutId] = useState(null);
+
+  // Toggle icon state for swap arrow
   const [isSwapped, setIsSwapped] = useState(false);
 
-  // Modal state and which token field is active ('from' or 'to')
+  // Manage modal open/close and active field
   const [modalOpen, setModalOpen] = useState(false);
   const [activeTokenField, setActiveTokenField] = useState(null);
 
-  // This function is triggered when the arrow icon is clicked
-  const handleSwap = () => {
-    alert(
-      `Swapping ${fromAmount} ${fromToken.name} to ${toAmount} ${toToken.name}`
-    );
+  const [quoteLoading, setQuoteLoading] = useState(false);
 
+  // State for error popup
+  const [errorPopup, setErrorPopup] = useState({ show: false, message: "" });
+
+  const handleSwap = () => {
     setIsSwapped((prev) => !prev);
+    setFromToken(toToken);
+    setToToken(fromToken);
+    setFromAmount(toAmount);
+    setToAmount(fromAmount);
+    setFromAddress(toAddress);
+    setToAddress(fromAddress);
   };
+
+  const getSwapValue = () => {
+    if (
+      fromAddress == "Xen-frfrfrfrfrfrfrfrfrfrfr" ||
+      toAddress == "Xen-frfrfrfrfrfrfrfrfrfrfr"
+    ) {
+      setQuoteLoading(true);
+      let fromPrice = 1,
+        toPrice = 1; // default values
+
+      if (fromAddress == "Xen-frfrfrfrfrfrfrfrfrfrfr") {
+        fromPrice = 0.99; // hardcoded since it's not listed
+        let config = {
+          method: "get",
+          maxBodyLength: Infinity,
+          url: "https://api.jup.ag/price/v2",
+          headers: {},
+          params: { ids: toAddress },
+        };
+
+        axios
+          .request(config)
+          .then((response) => {
+            toPrice = JSON.stringify(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        toPrice = 0.99; // hardcoded since it's not listed
+        let config = {
+          method: "get",
+          maxBodyLength: Infinity,
+          url: "https://api.jup.ag/price/v2",
+          headers: {},
+          params: { ids: fromAddress },
+        };
+
+        axios
+          .request(config)
+          .then((response) => {
+            fromPrice = JSON.stringify(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+
+      const convertedAmount = (fromAmount * fromPrice) / toPrice;
+      setToAmount(convertedAmount.toFixed(2));
+      setQuoteLoading(false);
+    } else {
+      setQuoteLoading(true);
+      const config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: "https://api.jup.ag/swap/v1/quote",
+        headers: {
+          Accept: "application/json",
+        },
+        params: {
+          inputMint: fromAddress,
+          outputMint: toAddress,
+          amount: fromAmount,
+        },
+      };
+
+      axios
+        .request(config)
+        .then((response) => {
+          let value = response.data;
+          setToAmount(value.outAmount);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 400) {
+            setErrorPopup({
+              show: true,
+              message:
+                "Swap cannot be executed for these tokens or amount, please enter a valid amount",
+            });
+          } else {
+            console.error(error);
+          }
+        })
+        .finally(() => {
+          setQuoteLoading(false);
+        });
+    }
+  };
+
+  // Debounce API calls when fromAmount changes
+  useEffect(() => {
+    if (!fromAmount) return; // prevent unnecessary API calls
+
+    if (timeoutId) clearTimeout(timeoutId);
+
+    const newTimeoutId = setTimeout(() => {
+      getSwapValue();
+    }, 1000);
+
+    setTimeoutId(newTimeoutId);
+
+    return () => clearTimeout(newTimeoutId);
+  }, [fromAmount]);
+
+  // Update USD conversion for the "from" token
+  useEffect(() => {
+    if (!fromToken || !fromToken.name || !fromAmount) {
+      setFromUSD("0");
+      return;
+    }
+
+    const fetchFromPrice = async () => {
+      try {
+        if (fromToken.extensions.coingeckoId) {
+          const res = await axios.get(
+            `https://api.coingecko.com/api/v3/simple/price?ids=${fromToken.extensions.coingeckoId}&vs_currencies=usd`
+          );
+          const price = res.data[fromToken.coingeckoId]?.usd || 0;
+          setFromUSD((parseFloat(fromAmount) * price).toFixed(2));
+        }
+      } catch (error) {
+        console.error("Error fetching USD price for from token:", error);
+      }
+    };
+
+    fetchFromPrice();
+    const interval = setInterval(fetchFromPrice, 60000); // refresh every 60 seconds
+    return () => clearInterval(interval);
+  }, [fromAmount, fromToken]);
+
+  // Update USD conversion for the "to" token
+  useEffect(() => {
+    if (!toToken || !toToken.name || !toAmount) {
+      setToUSD("0");
+      return;
+    }
+
+    const fetchToPrice = async () => {
+      try {
+        if (toToken.extensions.coingeckoId) {
+          const res = await axios.get(
+            `https://api.coingecko.com/api/v3/simple/price?ids=${toToken.name}&vs_currencies=usd`
+          );
+          const price = res.data[toToken.coingeckoId]?.usd || 0;
+          setToUSD((parseFloat(toAmount) * price).toFixed(2));
+        }
+      } catch (error) {
+        console.error("Error fetching USD price for to token:", error);
+      }
+    };
+
+    fetchToPrice();
+    const interval = setInterval(fetchToPrice, 60000); // refresh every 60 seconds
+    return () => clearInterval(interval);
+  }, [toAmount, toToken]);
 
   return (
     <div className="w-[90%] lg:w-2/3 px-4 mx-auto mt-24 lg:px-14">
-      <div className="flex flex-col md:flex-col lg:flex-row gap-6">
+      <div className="flex flex-col md:flex-col lg:flex-row gap-4 lg:gap-0">
         {/* LEFT: Swap Panel */}
         <div className="lg:px-6 lg:w-3/4 mx-auto">
           <div className="bg-gray-900 rounded-3xl py-12 px-4 ">
@@ -60,14 +225,14 @@ function SwapPanel() {
               }}
             >
               {/* From Section */}
-              <div className="">
+              <div>
                 <div className="font-semibold mb-2 text-gray-300">
-                  <div className="flex text-sm items-center justify-between">
+                  <div className="flex text-xs lg:text-sm items-center justify-between">
                     <p>From</p>
                     <p>
                       Balance:{" "}
                       <span className="text-gray-600">
-                        0.0 {fromToken.name}
+                        0.0 {fromToken.symbol || fromToken.name || "Token"}
                       </span>
                     </p>
                   </div>
@@ -75,56 +240,62 @@ function SwapPanel() {
                 <div className="border-gray-800 border-[1px] py-2 px-3 rounded-lg mb-12">
                   <div className="flex items-center justify-between">
                     <div>
-                      {/* Token button for "to" selection */}
                       <button
                         type="button"
                         onClick={() => {
                           setActiveTokenField("from");
                           setModalOpen(true);
                         }}
-                        className="text-xs lg:text-sm w-40 px-3 py-3 lg:py-7 bg-gray-800 bg-opacity-45 text-gray-200 font-bold rounded-lg focus:outline-none flex items-center justify-center"
+                        className="text-xs lg:text-sm w-28 lg:w-40 px-3 py-3 lg:py-7 bg-gray-800 bg-opacity-45 text-gray-200 font-bold rounded-lg focus:outline-none flex items-center justify-center"
                       >
                         <div className="flex items-center mr-2">
-                          <Image
-                            src={fromToken.logo}
-                            alt={fromToken.name}
-                            width={15} // Adjust width and height as needed
-                            height={15}
-                            className="mr-2"
-                          />
-                          {fromToken.name}
+                          {fromToken.logoURI ? (
+                            <Image
+                              src={fromToken.logoURI}
+                              alt={fromToken.symbol || "Solana"}
+                              width={15}
+                              height={15}
+                              className="mr-2"
+                            />
+                          ) : (
+                            <Image
+                              src={sol}
+                              alt="Fallback"
+                              width={15}
+                              height={15}
+                              className="mr-2"
+                            />
+                          )}
+                          {fromToken.symbol || fromToken.name || "Solana"}
                         </div>
                         <ChevronDown size={16} className="text-gray-200" />
                       </button>
                     </div>
                     <div className="w-1/2">
                       <input
-                        id="toAmount"
+                        id="fromAmount"
                         type="number"
+                        inputMode="numeric"
                         placeholder="0"
                         value={fromAmount}
                         onChange={(e) => setFromAmount(e.target.value)}
-                        className="w-full text-3xl text-right p-2 rounded bg-transparent text-gray-200 focus:outline-none"
+                        className="w-full text-2xl lg:text-3xl text-right p-2 rounded bg-transparent text-gray-200 focus:outline-none"
                       />
-                      <div className="flex flex-col items-end pr-6">
-                        <p className="text-slate-500 font-bold">~$0</p>
+                      <div className="text-right pr-[0.6rem]">
+                        <p className="text-slate-500 font-bold">~${fromUSD}</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Center Arrow Icon for Swap (clickable) */}
+              {/* Center Arrow Icon for Swap */}
               <div className="relative flex justify-center my-6">
-                {/* Horizontal Line */}
                 <hr className="opacity-45 absolute top-1/2 left-0 w-full border-t border-slate-800" />
-
-                {/* Swap Icon */}
                 <div
                   onClick={handleSwap}
-                  className="cursor-pointer bg-black rounded-lg py-2 px-3 absolute top-1/2 transform -translate-y-1/2 z-10 transition-opacity duration-500"
+                  className="cursor-pointer bg-gray-950 rounded-lg py-2 px-3 absolute top-1/2 transform -translate-y-1/2 z-10 transition-opacity duration-500"
                 >
-                  {/* Conditionally render the icon based on isSwapped state */}
                   {isSwapped ? (
                     <ArrowDownUp size={14} className="text-gray-200" />
                   ) : (
@@ -133,38 +304,54 @@ function SwapPanel() {
                 </div>
               </div>
 
-              {/* to section */}
-              <div className="mt-4 ">
+              {/* To Section */}
+              <div className="mt-4">
                 <div className="font-semibold mb-2 text-gray-300">
-                  <div className="flex text-sm items-center justify-between">
+                  <div className="flex text-xs lg:text-sm items-center justify-between">
                     <p>To</p>
                     <p>
                       Balance:{" "}
-                      <span className="text-gray-600">0.0 {toToken.name}</span>
+                      <span className="text-gray-600">
+                        0.0 {toToken.symbol || toToken.name || "Token"}
+                      </span>
                     </p>
                   </div>
                 </div>
-                <div className="border-gray-800 border-[1px] py-2 px-3 rounded-lg">
+                {/* <div className="border-gray-800 border-[1px] py-2 px-3 rounded-lg"> */}
+                <div
+                  className={`border-gray-800 border-[1px] py-2 px-3 rounded-lg ${
+                    quoteLoading ? "animate-pulse" : ""
+                  }`}
+                >
                   <div className="flex items-center justify-between">
                     <div>
-                      {/* Token button for "to" selection */}
                       <button
                         type="button"
                         onClick={() => {
                           setActiveTokenField("to");
                           setModalOpen(true);
                         }}
-                        className="text-xs lg:text-sm w-40 px-3 py-3 lg:py-7 bg-gray-800 bg-opacity-45 text-gray-200 font-bold rounded-lg focus:outline-none flex items-center justify-center"
+                        className="text-xs lg:text-sm w-28 lg:w-40 px-3 py-3 lg:py-7 bg-gray-800 bg-opacity-45 text-gray-200 font-bold rounded-lg focus:outline-none flex items-center justify-center"
                       >
                         <div className="flex items-center mr-2">
-                          <Image
-                            src={toToken.logo}
-                            alt={toToken.name}
-                            width={15} // Adjust width and height as needed
-                            height={15}
-                            className="mr-2"
-                          />
-                          {toToken.name}
+                          {toToken.logoURI ? (
+                            <Image
+                              src={toToken.logoURI}
+                              alt={toToken.symbol || "To Token"}
+                              width={15}
+                              height={15}
+                              className="mr-2"
+                            />
+                          ) : (
+                            <Image
+                              src={xenox_logo}
+                              alt="Fallback"
+                              width={15}
+                              height={15}
+                              className="mr-2"
+                            />
+                          )}
+                          {toToken.symbol || toToken.name || "Xenox"}
                         </div>
                         <ChevronDown size={16} className="text-gray-200" />
                       </button>
@@ -173,70 +360,29 @@ function SwapPanel() {
                       <input
                         id="toAmount"
                         type="number"
+                        inputMode="numeric"
                         placeholder="0"
                         value={toAmount}
                         onChange={(e) => setToAmount(e.target.value)}
-                        className="w-full text-3xl text-right p-2 rounded bg-transparent text-gray-200 focus:outline-none"
+                        className="w-full text-2xl lg:text-3xl text-right p-2 rounded bg-transparent text-gray-200 focus:outline-none"
                       />
-                      <div className="flex flex-col items-end pr-6">
-                        <p className="text-slate-500 font-bold">~$0</p>
+                      <div className="text-right pr-[0.6rem]">
+                        <p className="text-slate-500 font-bold">~${toUSD}</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </form>
-
-            {/* Modal for Token Selection */}
-            {modalOpen && (
-              <div className="fixed inset-0 flex items-center justify-center z-50">
-                {/* Overlay */}
-                <div
-                  className="absolute inset-0 bg-black opacity-50"
-                  onClick={() => setModalOpen(false)}
-                ></div>
-                {/* Modal Content */}
-                <div className="w-[90%] bg-gray-950 p-4 rounded-lg z-10 max-w-sm">
-                  <h2 className="text-xl text-gray-200 mb-4">Select a token</h2>
-                  <ul>
-                    {tokens.map((token) => (
-                      <li key={token.name} className="mb-2  flex items-center">
-                        <button
-                          type="button"
-                          className="w-full h-20 flex items-center justify-center text-left px-4 py-2 bg-gray-900 text-gray-200 hover:bg-gray-600 rounded"
-                          onClick={() => {
-                            if (activeTokenField === "from") {
-                              setFromToken(token);
-                            } else if (activeTokenField === "to") {
-                              setToToken(token);
-                            }
-                            setModalOpen(false);
-                          }}
-                        >
-                          <Image
-                            src={token.logo}
-                            alt={token.name}
-                            width={24}
-                            height={24}
-                            className="mr-2"
-                          />
-                          {token.name}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
           </div>
+
           <CryptoReading />
         </div>
 
         {/* RIGHT: Instruction Card */}
-        <div className="bg-gray-900 rounded-3xl p-10 lg:w-2/4 mx-auto">
+        <div className="bg-gray-900 rounded-3xl p-5 lg:p-10 lg:w-2/4 mx-auto">
           <h2 className="text-xl text-gray-200 mb-6 text-left">Swap</h2>
           <div className="relative">
-            {/* Vertical line behind the numbered circles */}
             <div className="absolute left-4 top-8 bottom-0 w-px bg-gray-950"></div>
             <ol className="space-y-8">
               {instructions.map((text, index) => (
@@ -247,7 +393,7 @@ function SwapPanel() {
                     </span>
                   </div>
                   <div className="ml-4">
-                    <p className="text-gray-200">{text}</p>
+                    <p className="text-gray-200 text-sm lg:text-base">{text}</p>
                   </div>
                 </li>
               ))}
@@ -255,6 +401,34 @@ function SwapPanel() {
           </div>
         </div>
       </div>
+
+      {/* Token Selector Modal */}
+      <TokenSelector
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        activeTokenField={activeTokenField}
+        setFromToken={setFromToken}
+        setToToken={setToToken}
+        setFromAddress={setFromAddress}
+        setToAddress={setToAddress}
+      />
+
+      {/* Error Popup */}
+      {errorPopup.show && (
+        <div className="fixed bg-gray-950 bg-opacity-70 inset-0 flex items-center justify-center z-50 ">
+          <div className="bg-gray-950 p-6 rounded-lg shadow-lg max-w-lg">
+            <p className="text-red-700 bg-red-900 p-6 bg-opacity-15 text-sm">
+              {errorPopup.message}
+            </p>
+            <button
+              onClick={() => setErrorPopup({ show: false, message: "" })}
+              className="mt-4 text-sm bg-gray-900 px-4 py-2 rounded text-gray-200"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

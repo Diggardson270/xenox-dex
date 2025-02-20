@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Image from "next/image";
 import sol from "../../public/solana-sol-logo.svg";
-import orca from "../../public/orca-logo.svg";
+import xenox from "../../public/xenoxlogo.svg";
 
 export default function CryptoReading() {
   const [prices, setPrices] = useState({ solana: 0, orca: 0 });
@@ -25,38 +25,48 @@ export default function CryptoReading() {
   }, []);
 
   return (
-    <div className="mt-10 bg-gray-900 text-white p-6 rounded-xl">
+    <div className="mt-6 bg-gray-900 text-white p-6 rounded-xl">
       <div className="space-y-4">
         {/* Solana */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Image src={sol} alt="Solana" width={30} height={30} />
+            <Image
+              src={sol}
+              alt="Solana"
+              width={30}
+              height={30}
+              className="w-5 lg:w-8"
+            />
             <div>
-              <p className="font-bold">
-                SOL <span className="text-gray-400">Solana</span>
+              <p className="font-bold text-sm">
+                SOL <span className="text-gray-400 text-xs">Solana</span>
               </p>
               <p className="text-gray-500 text-sm">$so1...1112</p>
             </div>
           </div>
-          <p className="text-lg font-semibold">
+          <p className="font-semibold text-xs lg:text-base">
             ${prices.solana?.usd?.toFixed(2)}
           </p>
         </div>
 
-        {/* Orca */}
+        {/* Xenox */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <Image src={orca} alt="Orca" width={30} height={30} />
+          <div className="flex space-x-3">
+            <Image
+              className="w-5 lg:w-8"
+              src={xenox}
+              alt="Xenox"
+              width={30}
+              height={30}
+            />
             <div>
-              <p className="font-bold">
-                ORCA <span className="text-gray-400">Orca</span>
+              <p className="font-bold text-sm">
+                XENOX <span className="text-gray-400 text-xs">Xenox</span>
               </p>
-              <p className="text-gray-500 text-sm">orca...ktZE</p>
+              <p className="text-gray-500 text-sm">Xenox...csmf</p>
             </div>
           </div>
-          <p className="text-lg font-semibold">
-            ${prices.orca?.usd?.toFixed(4)}
-          </p>
+          <p className="font-semibold text-xs lg:text-base">$0.99</p>
         </div>
       </div>
     </div>
