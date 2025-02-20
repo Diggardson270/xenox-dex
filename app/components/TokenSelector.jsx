@@ -90,8 +90,8 @@ export default function TokenSelector({
             placeholder="SOL, USDC, JLP...."
             value={searchQuery}
             onChange={(e) => {
-              setSearchQuery(e.target.value); 
-              setDisplayCount(10)
+              setSearchQuery(e.target.value);
+              setDisplayCount(10);
             }}
             className="w-full pl-10 pr-4 py-4 mb-2 rounded-lg border border-gray-700 bg-transparent text-gray-500 placeholder:text-gray-700 outline-none focus:border-gray-500"
           />
@@ -100,7 +100,10 @@ export default function TokenSelector({
         {loading ? (
           <p className="text-gray-400 text-center">Loading tokens...</p>
         ) : (
-          <ul className="modal overflow-auto max-h-[400px] mt-10 py-5" onScroll={handleScroll}>
+          <ul
+            className="modal overflow-auto max-h-[400px] mt-10 py-5"
+            onScroll={handleScroll}
+          >
             {displayedTokens.map((token) => (
               <li
                 key={token.address}
@@ -108,7 +111,7 @@ export default function TokenSelector({
               >
                 <button
                   type="button"
-                  className="w-[90%] h-20 flex items-center justify-between px-4 lg:py-8 py-2 bg-gray-700 bg-opacity-15 text-gray-200 hover:bg-gray-800 rounded"
+                  className="w-[90%] text-xs md:text-sm lg:text-base h-20 flex items-center justify-between px-4 lg:py-8 py-2 bg-gray-700 bg-opacity-15 text-gray-200 hover:bg-gray-800 rounded"
                   onClick={() => {
                     if (activeTokenField === "from") {
                       setFromToken(token);
@@ -122,7 +125,11 @@ export default function TokenSelector({
                 >
                   {token.symbol} ({token.name})
                   <Image
-                    src={token.name == 'Xenox' ? token.logoURI:pasrseLogoURI(token.logoURI)}
+                    src={
+                      token.name == "Xenox"
+                        ? token.logoURI
+                        : pasrseLogoURI(token.logoURI)
+                    }
                     alt={token.symbol}
                     width={32}
                     height={32}

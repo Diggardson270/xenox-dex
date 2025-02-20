@@ -42,7 +42,10 @@ function Header() {
         <nav className="font-bold flex items-center justify-between text-gray-200 px-2">
           {/* Logo */}
           <Link href="/" className="text-base lg:text-2xl font-bold uppercase">
-            <span className="text-2xl lg:text-4xl text-red-700">X</span>enox
+            <span className="text-2xl lg:text-4xl text-[#20ca53] [text-shadow:0_0_2px_#178137,0_0_2px_#178137,0_0_2px_#178137]">
+              X
+            </span>
+            enox
           </Link>
 
           {/* Desktop Navigation */}
@@ -53,7 +56,10 @@ function Header() {
               onClick={handleConnect}
               className="flex text-sm lg:text-base justify-between items-center gap-1  text-gray-200 font-bold py-2 px-4 rounded"
             >
-              <Wallet size={14} className="text-red-700" />
+              <Wallet
+                size={14}
+                className="text-[#20ca53] [text-shadow:0_0_2px_#178137,0_0_2px_#178137,0_0_2px_#178137]"
+              />
               <p>Connect Wallet</p>
             </button>
 
