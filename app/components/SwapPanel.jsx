@@ -120,7 +120,6 @@ function SwapPanel() {
           inputMint: fromAddress,
           outputMint: toAddress,
           amount: fromValue,
-          onlyDirectRoutes: true,
         },
       };
 
