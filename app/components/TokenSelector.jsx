@@ -14,6 +14,10 @@ export default function TokenSelector({
   setToToken,
   setFromAddress,
   setToAddress,
+  setFromAmount,
+  setFromUSE,
+  setToAmunt,
+  setToUSD,
 }) {
   const { tokens, loading } = useTokens();
   const [searchQuery, setSearchQuery] = useState("");
@@ -116,6 +120,10 @@ export default function TokenSelector({
                     if (activeTokenField === "from") {
                       setFromToken(token);
                       setFromAddress(token.address);
+                      setFromAmount("0");
+                      setFromUSE("0");
+                      setToAmunt("0");
+                      setToUSD("0");
                     } else if (activeTokenField === "to") {
                       setToToken(token);
                       setToAddress(token.address);
