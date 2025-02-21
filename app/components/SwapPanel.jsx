@@ -451,13 +451,12 @@ function SwapPanel() {
                   </div>
                 </div>
               </div>
-
-              <div className="mt-10 flex flex-col items-center justify-center">
-                <button className="text-sm md:text-base lg:text-lg py-5 shadow-xl rounded-2xl font-bold text-[#20ca53] bg-[#20ca53] w-full bg-opacity-5">
-                  Swap
-                </button>
-              </div>
             </form>
+            <div className="mt-10 flex flex-col items-center justify-center">
+              <button className="text-sm md:text-base lg:text-lg py-5 shadow-xl rounded-2xl font-bold text-[#20ca53] bg-[#20ca53] w-full bg-opacity-5">
+                Swap
+              </button>
+            </div>
           </div>
 
           <CryptoReading />
