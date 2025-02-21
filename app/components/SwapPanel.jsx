@@ -78,7 +78,10 @@ function SwapPanel() {
         axios
           .request(config)
           .then((response) => {
-            toPrice = JSON.stringify(response.data);
+            toPrice = response.data;
+            console.log(toPrice.data[toAddress]);
+            const convertedAmount = (fromAmount * fromPrice) / toPrice.data[toAddress].price;
+            setToAmount(convertedAmount);
           })
           .catch((error) => {
             console.log(error);
@@ -96,16 +99,18 @@ function SwapPanel() {
         axios
           .request(config)
           .then((response) => {
-            fromPrice = JSON.stringify(response.data);
+            fromPrice = response.data;
+            console.log(fromPrice.data[fromAddress]);
+            const convertedAmount = (fromAmount * fromPrice.data[fromAddress].price) / toPrice;
+            setToAmount(convertedAmount);
           })
           .catch((error) => {
             console.log(error);
           });
-      }
 
-      const convertedAmount = (fromAmount * fromPrice) / toPrice;
-      setToAmount(convertedAmount.toFixed(2));
+      }
       setQuoteLoading(false);
+      
     } else {
       setQuoteLoading(true);
       let fromValue  = fromAmount * (10**fromToken['decimals']);
