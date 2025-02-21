@@ -268,7 +268,7 @@ function SwapPanel() {
             {headers: {
               'Access-Control-Allow-Origin':'*',
               'accept': 'application/json',
-              'x-cg-pro-api-key': 'CG-EVsSJ6iN2t87GpXKbC8L2X3q'
+              'api-key': 'CG-EVsSJ6iN2t87GpXKbC8L2X3q'
             }}
           );
           const price = res.data[toAddress]?.usd || 0;
