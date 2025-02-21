@@ -13,7 +13,10 @@ export default function CryptoReading() {
         const res = await axios.get(
           "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd",
           {headers: {
-            'x-cg-pro-api-key': 'CG-EVsSJ6iN2t87GpXKbC8L2X3q'
+            'Access-Control-Allow-Origin':'*',
+            'accept': 'application/json',
+            'api-key': 'CG-EVsSJ6iN2t87GpXKbC8L2X3q'
+            
           }}
         );
         setPrices(res.data);
