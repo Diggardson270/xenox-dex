@@ -5,13 +5,16 @@ import sol from "../../public/solana-sol-logo.svg";
 import xenox from "../../public/xenoxlogo.svg";
 
 export default function CryptoReading() {
-  const [prices, setPrices] = useState({ solana: 0, orca: 0 });
+  const [prices, setPrices] = useState({ solana: 0, xen: 0 });
 
   useEffect(() => {
     const fetchPrices = async () => {
       try {
         const res = await axios.get(
-          "https://api.coingecko.com/api/v3/simple/price?ids=solana,orca&vs_currencies=usd"
+          "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd",
+          {headers: {
+            'x-cg-pro-api-key': 'CG-EVsSJ6iN2t87GpXKbC8L2X3q'
+          }}
         );
         setPrices(res.data);
       } catch (error) {

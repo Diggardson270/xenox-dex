@@ -20,17 +20,55 @@ function SwapPanel() {
   ];
 
   // Store selected tokens (start with empty objects or fallback data)
-  const [fromToken, setFromToken] = useState({});
-  const [toToken, setToToken] = useState({});
-  const [fromAddress, setFromAddress] = useState(
-    "So11111111111111111111111111111111111111112"
-  );
-  const [fromUSD, setFromUSD] = useState("0");
+  const [fromToken, setFromToken] = useState({
+    "address": "So11111111111111111111111111111111111111112",
+    "created_at": 1714129018893,
+    "daily_volume": 2544417402.3655943871,
+    "decimals": 9,
+    "extensions": {
+        "coingeckoId": "wrapped-solana"
+    },
+    "freeze_authority": null,
+    "logoURI": "https:\/\/raw.githubusercontent.com\/solana-labs\/token-list\/main\/assets\/mainnet\/So11111111111111111111111111111111111111112\/logo.png",
+    "mint_authority": null,
+    "minted_at": null,
+    "name": "Wrapped SOL",
+    "permanent_delegate": null,
+    "symbol": "SOL",
+    "tags": [
+        "verified",
+        "strict",
+        "community"
+    ]
+});
+  const [toToken, setToToken] = useState({
+    "address": "Xen-frfrfrfrfrfrfrfrfrfrfr",
+    "created_at": 1714129018893,
+    "daily_volume": 2544417402.3655943871,
+    "decimals": 9,
+    // "extensions": {
+    //     "coingeckoId": "wrapped-solana"
+    // },
+    "freeze_authority": null,
+    "logoURI": xenox_logo,
+    "mint_authority": null,
+    "minted_at": null,
+    "name": "Xenox",
+    "permanent_delegate": null,
+    "symbol": "XEN",
+    "tags": [
+      "coming soon"
+    ]
+  });
 
-  const [fromAmount, setFromAmount] = useState("");
-  const [toAmount, setToAmount] = useState("");
+  const [fromAddress, setFromAddress] = useState("So11111111111111111111111111111111111111112");
   const [toAddress, setToAddress] = useState("Xen-frfrfrfrfrfrfrfrfrfrfr");
+
+  const [fromUSD, setFromUSD] = useState("0");
   const [toUSD, setToUSD] = useState("0");
+
+  const [fromAmount, setFromAmount] = useState("0");
+  const [toAmount, setToAmount] = useState("0");
 
   const [timeoutId, setTimeoutId] = useState(null);
 
@@ -79,7 +117,6 @@ function SwapPanel() {
           .request(config)
           .then((response) => {
             toPrice = response.data;
-            console.log(toPrice.data[toAddress]);
             const convertedAmount = (fromAmount * fromPrice) / toPrice.data[toAddress].price;
             setToAmount(convertedAmount);
           })
@@ -100,7 +137,6 @@ function SwapPanel() {
           .request(config)
           .then((response) => {
             fromPrice = response.data;
-            console.log(fromPrice.data[fromAddress]);
             const convertedAmount = (fromAmount * fromPrice.data[fromAddress].price) / toPrice;
             setToAmount(convertedAmount);
           })
@@ -170,20 +206,34 @@ function SwapPanel() {
   // Update USD conversion for the "from" token
   useEffect(() => {
     if (!fromToken || !fromToken.name || !fromAmount) {
+      console.log('Not Running')
       setFromUSD("0");
       return;
     }
+    console.log('Use Effect for usd price')
 
     const fetchFromPrice = async () => {
-      try {
-        const res = await axios.get(
-          `https://api.coingecko.com/api/v3/simple/token_price/{solana}?contract_addresses={${fromToken.address}}&vs_currencies=usd`
-        );
-        const price = res.data[fromToken.coingeckoId]?.usd || 0;
-        setFromUSD((parseFloat(fromAmount) * price).toFixed(2));
-      } catch (error) {
-        console.error("Error fetching USD price for from token:", error);
+      if (fromAddress == "Xen-frfrfrfrfrfrfrfrfrfrfr") {
+        setFromUSD((parseFloat(fromAmount)*0.99).toFixed(2));
+      } else {
+        try {
+          const res = await axios.get(
+            `https://api.coingecko.com/api/v3/simple/token_price/solana?contract_addresses=${fromToken.address}&vs_currencies=usd`,
+            {headers: {
+              'Access-Control-Allow-Origin':'*',
+              'accept': 'application/json',
+              'api-key': 'CG-EVsSJ6iN2t87GpXKbC8L2X3q'
+            }}
+          );
+          console.log('This is fromUSD res: ', res)
+          const price = res.data[fromAddress]?.usd || 0;
+          console.log('This is the fetched price from coingecko: ',price)
+          setFromUSD((parseFloat(fromAmount) * price).toFixed(2));
+        } catch (error) {
+          console.error("Error fetching USD price for from token:", error);
+        }
       }
+      
     };
 
     fetchFromPrice();
@@ -199,16 +249,26 @@ function SwapPanel() {
     }
 
     const fetchToPrice = async () => {
-      try {
-        const res = await axios.get(
-          `https://api.coingecko.com/api/v3/simple/token_price/{solana}?contract_addresses={${toToken.address}}&vs_currencies=usd`
-        );
-        const price = res.data[toToken.coingeckoId]?.usd || 0;
-        setToUSD((parseFloat(toAmount) * price).toFixed(2));
-      
-      } catch (error) {
-        console.error("Error fetching USD price for to token:", error);
+      if (toAddress == "Xen-frfrfrfrfrfrfrfrfrfrfr") {
+        setToUSD((parseFloat(toAmount)*0.99).toFixed(2));
+      } else {
+        try {
+          const res = await axios.get(
+            `https://api.coingecko.com/api/v3/simple/token_price/solana?contract_addresses=${toToken.address}&vs_currencies=usd`, 
+            {headers: {
+              'Access-Control-Allow-Origin':'*',
+              'accept': 'application/json',
+              'x-cg-pro-api-key': 'CG-EVsSJ6iN2t87GpXKbC8L2X3q'
+            }}
+          );
+          const price = res.data[toAddress]?.usd || 0;
+          setToUSD((parseFloat(toAmount) * price));
+        
+        } catch (error) {
+          console.error("Error fetching USD price for to token:", error);
+        }
       }
+      
     };
 
     fetchToPrice();
