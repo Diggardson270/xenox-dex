@@ -192,7 +192,12 @@ function SwapPanel() {
 
   // Debounce API calls when fromAmount changes
   useEffect(() => {
-    if (!fromAmount) return; // prevent unnecessary API calls
+    if (!fromAmount) {
+      setToAmount("0");
+      setToUSD("0");
+      setFromUSD("0");
+      return;
+    }
 
     if (timeoutId) clearTimeout(timeoutId);
 
