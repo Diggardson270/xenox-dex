@@ -486,6 +486,10 @@ function SwapPanel() {
         setToToken={setToToken}
         setFromAddress={setFromAddress}
         setToAddress={setToAddress}
+        setFromAmount={setFromAmount}
+        setFromUSE={setFromUSD}
+        setToAmunt={setToAmount}
+        setToUSD={setToUSD}
       />
 
       {/* Error Popup */}
