@@ -71,6 +71,8 @@ function SwapPanel() {
   const [toAmount, setToAmount] = useState("0");
 
   const [timeoutId, setTimeoutId] = useState(null);
+  const [fromUSDTimeOut, setFromUSDTimeOut] = useState(null);
+  const [toUSDTimeOut, setToUSDTimeOut] = useState(null);
 
   // Toggle icon state for swap arrow
   const [isSwapped, setIsSwapped] = useState(false);
@@ -210,7 +212,6 @@ function SwapPanel() {
       setFromUSD("0");
       return;
     }
-    console.log('Use Effect for usd price')
 
     const fetchFromPrice = async () => {
       if (fromAddress == "Xen-frfrfrfrfrfrfrfrfrfrfr") {
@@ -225,9 +226,7 @@ function SwapPanel() {
               'api-key': 'CG-EVsSJ6iN2t87GpXKbC8L2X3q'
             }}
           );
-          console.log('This is fromUSD res: ', res)
           const price = res.data[fromAddress]?.usd || 0;
-          console.log('This is the fetched price from coingecko: ',price)
           setFromUSD((parseFloat(fromAmount) * price).toFixed(2));
         } catch (error) {
           console.error("Error fetching USD price for from token:", error);
@@ -236,9 +235,15 @@ function SwapPanel() {
       
     };
 
-    fetchFromPrice();
-    const interval = setInterval(fetchFromPrice, 60000); // refresh every 60 seconds
-    return () => clearInterval(interval);
+    if (fromUSDTimeOut) clearTimeout(fromUSDTimeOut);
+    const newTimeoutId = setTimeout(() =>{
+      fetchFromPrice();
+    }, 1000);
+    setFromUSDTimeOut(newTimeoutId)
+    return () => clearTimeout(newTimeoutId);
+
+    // const interval = setInterval(fetchFromPrice, 60000); // refresh every 60 seconds
+    // return () => clearInterval(interval);
   }, [fromAmount, fromToken]);
 
   // Update USD conversion for the "to" token
@@ -270,10 +275,16 @@ function SwapPanel() {
       }
       
     };
+    if (toUSDTimeOut) clearTimeout(toUSDTimeOut);
+    const newTimeoutId = setTimeout(() =>{
+      fetchToPrice();
+    }, 1000);
+    setToUSDTimeOut(newTimeoutId)
+    return () => clearTimeout(newTimeoutId);
 
-    fetchToPrice();
-    const interval = setInterval(fetchToPrice, 60000); // refresh every 60 seconds
-    return () => clearInterval(interval);
+    // fetchToPrice();
+    // const interval = setInterval(fetchToPrice, 60000); // refresh every 60 seconds
+    // return () => clearInterval(interval);
   }, [toAmount, toToken]);
 
   return (
