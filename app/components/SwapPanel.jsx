@@ -176,13 +176,11 @@ function SwapPanel() {
 
     const fetchFromPrice = async () => {
       try {
-        if (fromToken.extensions.coingeckoId) {
-          const res = await axios.get(
-            `https://api.coingecko.com/api/v3/simple/price?ids=${fromToken.extensions.coingeckoId}&vs_currencies=usd`
-          );
-          const price = res.data[fromToken.coingeckoId]?.usd || 0;
-          setFromUSD((parseFloat(fromAmount) * price).toFixed(2));
-        }
+        const res = await axios.get(
+          `https://api.coingecko.com/api/v3/simple/token_price/{solana}?contract_addresses={${fromToken.address}}&vs_currencies=usd`
+        );
+        const price = res.data[fromToken.coingeckoId]?.usd || 0;
+        setFromUSD((parseFloat(fromAmount) * price).toFixed(2));
       } catch (error) {
         console.error("Error fetching USD price for from token:", error);
       }
@@ -202,13 +200,12 @@ function SwapPanel() {
 
     const fetchToPrice = async () => {
       try {
-        if (toToken.extensions.coingeckoId) {
-          const res = await axios.get(
-            `https://api.coingecko.com/api/v3/simple/price?ids=${toToken.name}&vs_currencies=usd`
-          );
-          const price = res.data[toToken.coingeckoId]?.usd || 0;
-          setToUSD((parseFloat(toAmount) * price).toFixed(2));
-        }
+        const res = await axios.get(
+          `https://api.coingecko.com/api/v3/simple/token_price/{solana}?contract_addresses={${toToken.address}}&vs_currencies=usd`
+        );
+        const price = res.data[toToken.coingeckoId]?.usd || 0;
+        setToUSD((parseFloat(toAmount) * price).toFixed(2));
+      
       } catch (error) {
         console.error("Error fetching USD price for to token:", error);
       }
