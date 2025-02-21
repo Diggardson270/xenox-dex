@@ -5,7 +5,8 @@ import Link from "next/link";
 
 function Footer() {
   return (
-    <footer className="bg-gray-900 border border-gray-700 rounded-3xl w-[90%] z-50 max-w-7xl mx-auto px-6 md:px-8 py-6 text-center text-gray-300 relative bottom-6 shadow-lg">
+    <footer className="footerbg bg-gray-950 border border-gray-800 rounded-t-3xl w-[90%] z-50 max-w-7xl mx-auto px-6 md:px-8 py-6 text-center text-gray-300 relative shadow-lg">
+      <div className="absolute inset-0 bg-gray-950 bg-opacity-75 rounded-t-3xl -z-10"></div>
       <div className="container mx-auto flex flex-col items-center space-y-6">
         <p className="max-w-2xl text-xs lg:text-lg font-medium leading-relaxed">
           XENOX DEX is the fastest DEX on SOL with built-in sniper protection.
@@ -14,7 +15,7 @@ function Footer() {
           XENOX, valued at 1000 USDT, thanks to our generous grant!
         </p>
 
-        <div className="flex space-x-6 text-sm font-medium">
+        <div className="flex space-x-6 text-xs md:text-sm lg:text-base font-medium">
           <Link href="/privacy" className="hover:text-gray-400 transition-all">
             Privacy Policy
           </Link>
